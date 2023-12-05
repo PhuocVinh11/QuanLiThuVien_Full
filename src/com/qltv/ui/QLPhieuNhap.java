@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
@@ -33,6 +34,7 @@ public class QLPhieuNhap extends javax.swing.JPanel {
     NhaCungCapDAO nccdao = new NhaCungCapDAO();
     NhanVienDAO nvdao = new NhanVienDAO();
     ChiTietPhieuNhapDAO ctdao = new ChiTietPhieuNhapDAO();
+    
 
     /**
      * Creates new form QLPhieuNhap

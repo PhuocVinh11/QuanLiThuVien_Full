@@ -22,10 +22,10 @@ public class XJdbc {
 
     private static String driver = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
     public static String connUrl 
-            = "jdbc:sqlserver://NGUYENPHUOCVINH:1433;"
+            = "jdbc:sqlserver://NGUYENHUULY\\SQLEXPRESS:1433;"
             + "database=QuanLyThuVien;"
             + "user=sa; "
-            + "password=123456; "
+            + "password=12345; "
             + "encrypt=false;"
             + "trustServerCertificate=true;";;
 

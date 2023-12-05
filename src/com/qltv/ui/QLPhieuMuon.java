@@ -4,22 +4,93 @@
  */
 package com.qltv.ui;
 
+import com.qltv.dao.ChiTietPhieuMuonDAO;
+import com.qltv.dao.DocGiaDAO;
+import com.qltv.dao.NhanVienDAO;
+import com.qltv.dao.PhieuMuonDAO;
+import com.qltv.entity.ChiTietPhieuMuon;
+import com.qltv.entity.PhieuMuon;
 import com.qltv.utils.Auth;
+import com.qltv.utils.MsgBox;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
  * @author Admin
  */
 public class QLPhieuMuon extends javax.swing.JPanel {
-
+    PhieuMuonDAO pmdao = new PhieuMuonDAO();
+    DocGiaDAO dgdao = new DocGiaDAO();
+    NhanVienDAO nvdao = new NhanVienDAO();
+    ChiTietPhieuMuonDAO ctdao = new ChiTietPhieuMuonDAO();
     /**
      * Creates new form QLPhieuMuon
      */
     public QLPhieuMuon() {
         initComponents();
+        
         txtNhanVien.setText(Auth.user.getUser());
+        
+        this.fillTablePM();
+        this.fillComboBoxDocGia();
+        this.fillComboBoxNV();
+        this.fillComboBoxLoc();
     }
+    
+    private void fillTablePM() {
+        DefaultTableModel model = (DefaultTableModel) tblPM.getModel();
+        model.setRowCount(0);
+        try {
+            ArrayList<PhieuMuon> list = pmdao.selectAll();
+            for (PhieuMuon dg : list) {
+                Object[] row = {
+                    dg.getMaNV(),
+                    dg.getMaDG(),
+                    dg.getNgayMuon(),
+                    dg.isTrangThai(),
+                    
+                };
+                model.addRow(row);
+            }
+        } catch (Exception e) {
+            MsgBox.alert(this, "Lỗi truy vấn dữ liệu độc giả!");
+            e.printStackTrace();
+        }
+    }
+    
+    private void fillTableCT() {
 
+        DefaultTableModel model = (DefaultTableModel) tblPMCT.getModel();
+        model.setRowCount(0);
+        try {
+            List<ChiTietPhieuMuon> list = ctdao.selectAll();
+            for (ChiTietPhieuMuon tv : list) {
+                Object[] row = {
+                    tv.getMaCTPM(),
+                    tv.getMaPM(),
+                    ctdao.convertToTenSach(tv.getMaSach()),
+                    tv.getNgayTra(),
+                    tv.getGhiChu()
+                };
+                model.addRow(row);
+            }
+        } catch (Exception e) {
+            MsgBox.alert(this, "Lỗi truy vấn dữ liệu phiếu nhập!");
+            e.printStackTrace();
+        }
+
+    }
+    
+    private void fillComboBoxDG() {
+        cboDocGia.removeAllItems();
+        List<String> data = dgdao.select();
+        for (String item : data) {
+            cboDocGia.addItem(item);
+        }
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -29,52 +100,53 @@ public class QLPhieuMuon extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        btnTrangThai = new javax.swing.ButtonGroup();
         panelBorder1 = new com.qltv.swing.PanelBorder();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
-        jDateChooser1 = new com.toedter.calendar.JDateChooser();
+        dateNgayMuon = new com.toedter.calendar.JDateChooser();
         jLabel1 = new javax.swing.JLabel();
-        jRadioButton1 = new javax.swing.JRadioButton();
-        jRadioButton3 = new javax.swing.JRadioButton();
+        rdoMuon = new javax.swing.JRadioButton();
+        rdoTra = new javax.swing.JRadioButton();
         txtNhanVien = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        cboDocGia = new javax.swing.JComboBox<>();
         jLabel9 = new javax.swing.JLabel();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
+        btnSuaPM = new javax.swing.JButton();
+        btnXoaPM = new javax.swing.JButton();
+        btnMoiPM = new javax.swing.JButton();
+        btnThemPM = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
-        jDateChooser5 = new com.toedter.calendar.JDateChooser();
-        jTextField3 = new javax.swing.JTextField();
+        dateNgayTra = new com.toedter.calendar.JDateChooser();
+        txtTenSach = new javax.swing.JTextField();
         jLabel10 = new javax.swing.JLabel();
-        jTextField4 = new javax.swing.JTextField();
+        txtMaPM = new javax.swing.JTextField();
         jLabel11 = new javax.swing.JLabel();
-        jTextField5 = new javax.swing.JTextField();
+        txtSoLuong = new javax.swing.JTextField();
         jLabel12 = new javax.swing.JLabel();
         jLabel13 = new javax.swing.JLabel();
-        jButton6 = new javax.swing.JButton();
-        jButton9 = new javax.swing.JButton();
-        jButton8 = new javax.swing.JButton();
-        jButton7 = new javax.swing.JButton();
+        btnThemCTPM = new javax.swing.JButton();
+        btnMoiCTPM = new javax.swing.JButton();
+        btnXoaCTPM = new javax.swing.JButton();
+        btnSuaCTPM = new javax.swing.JButton();
         jButton10 = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tblPMCT = new javax.swing.JTable();
         jPanel6 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
-        jTable2 = new javax.swing.JTable();
+        tblPM = new javax.swing.JTable();
         jPanel7 = new javax.swing.JPanel();
-        jDateChooser3 = new com.toedter.calendar.JDateChooser();
-        jDateChooser4 = new com.toedter.calendar.JDateChooser();
+        dateTu = new com.toedter.calendar.JDateChooser();
+        dateDen = new com.toedter.calendar.JDateChooser();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
-        jTextField1 = new javax.swing.JTextField();
+        btnLoc = new javax.swing.JButton();
+        txtTimKiem = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(255, 255, 255));
@@ -93,22 +165,24 @@ public class QLPhieuMuon extends javax.swing.JPanel {
         jPanel2.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jDateChooser1.setBackground(new java.awt.Color(255, 255, 255));
-        jDateChooser1.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 0, 0)));
-        jDateChooser1.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
-        jPanel2.add(jDateChooser1, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 150, 263, 43));
+        dateNgayMuon.setBackground(new java.awt.Color(255, 255, 255));
+        dateNgayMuon.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 0, 0)));
+        dateNgayMuon.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        jPanel2.add(dateNgayMuon, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 150, 263, 43));
 
         jLabel1.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
         jLabel1.setText("Trạng thái");
         jPanel2.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 130, -1, -1));
 
-        jRadioButton1.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
-        jRadioButton1.setText("Đã mượn");
-        jPanel2.add(jRadioButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 160, -1, -1));
+        btnTrangThai.add(rdoMuon);
+        rdoMuon.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
+        rdoMuon.setText("Đã mượn");
+        jPanel2.add(rdoMuon, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 160, -1, -1));
 
-        jRadioButton3.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
-        jRadioButton3.setText("Đã trả");
-        jPanel2.add(jRadioButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(590, 160, -1, -1));
+        btnTrangThai.add(rdoTra);
+        rdoTra.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
+        rdoTra.setText("Đã trả");
+        jPanel2.add(rdoTra, new org.netbeans.lib.awtextra.AbsoluteConstraints(590, 160, -1, -1));
 
         txtNhanVien.setEditable(false);
         txtNhanVien.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
@@ -120,59 +194,59 @@ public class QLPhieuMuon extends javax.swing.JPanel {
         jPanel2.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 130, -1, -1));
 
         jLabel8.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
-        jLabel8.setText("Nhân viên");
+        jLabel8.setText("Độc giả");
         jPanel2.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 40, -1, -1));
 
-        jComboBox1.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        jComboBox1.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 0, 0)));
-        jPanel2.add(jComboBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 60, 280, 40));
+        cboDocGia.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
+        cboDocGia.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cboDocGia.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 0, 0)));
+        jPanel2.add(cboDocGia, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 60, 280, 40));
 
         jLabel9.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
         jLabel9.setText("Nhân viên");
         jPanel2.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 40, -1, -1));
 
-        jButton2.setBackground(new java.awt.Color(204, 153, 0));
-        jButton2.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
-        jButton2.setText("Sửa");
-        jPanel2.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(810, 80, -1, -1));
+        btnSuaPM.setBackground(new java.awt.Color(204, 153, 0));
+        btnSuaPM.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
+        btnSuaPM.setText("Sửa");
+        jPanel2.add(btnSuaPM, new org.netbeans.lib.awtextra.AbsoluteConstraints(810, 80, -1, -1));
 
-        jButton3.setBackground(new java.awt.Color(204, 153, 0));
-        jButton3.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
-        jButton3.setText("Xóa");
-        jPanel2.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(810, 120, -1, -1));
+        btnXoaPM.setBackground(new java.awt.Color(204, 153, 0));
+        btnXoaPM.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
+        btnXoaPM.setText("Xóa");
+        jPanel2.add(btnXoaPM, new org.netbeans.lib.awtextra.AbsoluteConstraints(810, 120, -1, -1));
 
-        jButton4.setBackground(new java.awt.Color(204, 153, 0));
-        jButton4.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
-        jButton4.setText("Mới");
-        jPanel2.add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(810, 160, -1, -1));
+        btnMoiPM.setBackground(new java.awt.Color(204, 153, 0));
+        btnMoiPM.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
+        btnMoiPM.setText("Mới");
+        jPanel2.add(btnMoiPM, new org.netbeans.lib.awtextra.AbsoluteConstraints(810, 160, -1, -1));
 
-        jButton5.setBackground(new java.awt.Color(204, 153, 0));
-        jButton5.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
-        jButton5.setText("Thêm");
-        jPanel2.add(jButton5, new org.netbeans.lib.awtextra.AbsoluteConstraints(810, 40, -1, -1));
+        btnThemPM.setBackground(new java.awt.Color(204, 153, 0));
+        btnThemPM.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
+        btnThemPM.setText("Thêm");
+        jPanel2.add(btnThemPM, new org.netbeans.lib.awtextra.AbsoluteConstraints(810, 40, -1, -1));
 
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Chi tiết phiếu mượn", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI Semilight", 0, 16), new java.awt.Color(153, 102, 0))); // NOI18N
         jPanel3.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
 
-        jDateChooser5.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 0, 0)));
-        jDateChooser5.setToolTipText("");
+        dateNgayTra.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 0, 0)));
+        dateNgayTra.setToolTipText("");
 
-        jTextField3.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
-        jTextField3.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 0, 0)));
+        txtTenSach.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
+        txtTenSach.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 0, 0)));
 
         jLabel10.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
         jLabel10.setText("Tên sách");
 
-        jTextField4.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
-        jTextField4.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 0, 0)));
+        txtMaPM.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
+        txtMaPM.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 0, 0)));
 
         jLabel11.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
         jLabel11.setText("Mã phiếu mượn");
 
-        jTextField5.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
-        jTextField5.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 0, 0)));
+        txtSoLuong.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
+        txtSoLuong.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 0, 0)));
 
         jLabel12.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
         jLabel12.setText("Số lượng");
@@ -180,21 +254,21 @@ public class QLPhieuMuon extends javax.swing.JPanel {
         jLabel13.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
         jLabel13.setText("Ngày trả");
 
-        jButton6.setBackground(new java.awt.Color(204, 153, 0));
-        jButton6.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
-        jButton6.setText("Thêm");
+        btnThemCTPM.setBackground(new java.awt.Color(204, 153, 0));
+        btnThemCTPM.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
+        btnThemCTPM.setText("Thêm");
 
-        jButton9.setBackground(new java.awt.Color(204, 153, 0));
-        jButton9.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
-        jButton9.setText("Mới");
+        btnMoiCTPM.setBackground(new java.awt.Color(204, 153, 0));
+        btnMoiCTPM.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
+        btnMoiCTPM.setText("Mới");
 
-        jButton8.setBackground(new java.awt.Color(204, 153, 0));
-        jButton8.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
-        jButton8.setText("Xóa");
+        btnXoaCTPM.setBackground(new java.awt.Color(204, 153, 0));
+        btnXoaCTPM.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
+        btnXoaCTPM.setText("Xóa");
 
-        jButton7.setBackground(new java.awt.Color(204, 153, 0));
-        jButton7.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
-        jButton7.setText("Sửa");
+        btnSuaCTPM.setBackground(new java.awt.Color(204, 153, 0));
+        btnSuaCTPM.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
+        btnSuaCTPM.setText("Sửa");
 
         jButton10.setBackground(new java.awt.Color(204, 153, 0));
         jButton10.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
@@ -209,28 +283,28 @@ public class QLPhieuMuon extends javax.swing.JPanel {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtSoLuong, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(42, 42, 42)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jDateChooser5, javax.swing.GroupLayout.PREFERRED_SIZE, 231, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(dateNgayTra, javax.swing.GroupLayout.PREFERRED_SIZE, 231, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(163, 163, 163))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtMaPM, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel10)
                             .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 543, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(txtTenSach, javax.swing.GroupLayout.PREFERRED_SIZE, 543, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
                                 .addComponent(jButton10)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton6)
-                    .addComponent(jButton7)
-                    .addComponent(jButton8)
-                    .addComponent(jButton9))
+                    .addComponent(btnThemCTPM)
+                    .addComponent(btnSuaCTPM)
+                    .addComponent(btnXoaCTPM)
+                    .addComponent(btnMoiCTPM))
                 .addGap(529, 529, 529))
         );
         jPanel3Layout.setVerticalGroup(
@@ -243,7 +317,7 @@ public class QLPhieuMuon extends javax.swing.JPanel {
                             .addGroup(jPanel3Layout.createSequentialGroup()
                                 .addGap(20, 20, 20)
                                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtTenSach, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jButton10)))
                             .addComponent(jLabel10))
                         .addGap(6, 6, 6)
@@ -251,7 +325,7 @@ public class QLPhieuMuon extends javax.swing.JPanel {
                             .addComponent(jLabel11)
                             .addGroup(jPanel3Layout.createSequentialGroup()
                                 .addGap(20, 20, 20)
-                                .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(txtMaPM, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel13)
@@ -259,17 +333,17 @@ public class QLPhieuMuon extends javax.swing.JPanel {
                             .addGroup(jPanel3Layout.createSequentialGroup()
                                 .addGap(20, 20, 20)
                                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jDateChooser5, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                    .addComponent(dateNgayTra, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtSoLuong, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGap(19, 19, 19)
-                        .addComponent(jButton6)
+                        .addComponent(btnThemCTPM)
                         .addGap(11, 11, 11)
-                        .addComponent(jButton7)
+                        .addComponent(btnSuaCTPM)
                         .addGap(11, 11, 11)
-                        .addComponent(jButton8)
+                        .addComponent(btnXoaCTPM)
                         .addGap(11, 11, 11)
-                        .addComponent(jButton9)))
+                        .addComponent(btnMoiCTPM)))
                 .addGap(0, 17, Short.MAX_VALUE))
         );
 
@@ -310,10 +384,10 @@ public class QLPhieuMuon extends javax.swing.JPanel {
         jPanel4.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jPanel5.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Phiếu mượn", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI Semilight", 0, 16), new java.awt.Color(102, 51, 0))); // NOI18N
+        jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Phiếu mượn chi tiết", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI Semilight", 0, 16), new java.awt.Color(102, 51, 0))); // NOI18N
         jPanel5.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tblPMCT.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -324,7 +398,7 @@ public class QLPhieuMuon extends javax.swing.JPanel {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane2.setViewportView(jTable1);
+        jScrollPane2.setViewportView(tblPMCT);
 
         jPanel5.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 30, -1, 345));
 
@@ -334,7 +408,7 @@ public class QLPhieuMuon extends javax.swing.JPanel {
         jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Phiếu mượn", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI Semilight", 0, 16), new java.awt.Color(102, 51, 0))); // NOI18N
         jPanel6.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+        tblPM.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -345,7 +419,7 @@ public class QLPhieuMuon extends javax.swing.JPanel {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane3.setViewportView(jTable2);
+        jScrollPane3.setViewportView(tblPM);
 
         jPanel6.add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 30, -1, 345));
 
@@ -354,11 +428,11 @@ public class QLPhieuMuon extends javax.swing.JPanel {
         jPanel7.setBackground(new java.awt.Color(255, 255, 255));
         jPanel7.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Lọc", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI Semilight", 0, 16))); // NOI18N
 
-        jDateChooser3.setBackground(new java.awt.Color(255, 255, 255));
-        jDateChooser3.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        dateTu.setBackground(new java.awt.Color(255, 255, 255));
+        dateTu.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
 
-        jDateChooser4.setBackground(new java.awt.Color(255, 255, 255));
-        jDateChooser4.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        dateDen.setBackground(new java.awt.Color(255, 255, 255));
+        dateDen.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
 
         jLabel4.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
         jLabel4.setText("Từ");
@@ -366,9 +440,9 @@ public class QLPhieuMuon extends javax.swing.JPanel {
         jLabel5.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
         jLabel5.setText("đến");
 
-        jButton1.setBackground(new java.awt.Color(204, 153, 0));
-        jButton1.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
-        jButton1.setText("Lọc");
+        btnLoc.setBackground(new java.awt.Color(204, 153, 0));
+        btnLoc.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
+        btnLoc.setText("Lọc");
 
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
@@ -378,13 +452,13 @@ public class QLPhieuMuon extends javax.swing.JPanel {
                 .addGap(12, 12, 12)
                 .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jDateChooser3, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(dateTu, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jDateChooser4, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(dateDen, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
-                .addComponent(jButton1)
+                .addComponent(btnLoc)
                 .addContainerGap())
         );
         jPanel7Layout.setVerticalGroup(
@@ -397,22 +471,22 @@ public class QLPhieuMuon extends javax.swing.JPanel {
                             .addGroup(jPanel7Layout.createSequentialGroup()
                                 .addGap(0, 0, Short.MAX_VALUE)
                                 .addComponent(jLabel5))
-                            .addComponent(jDateChooser3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(dateTu, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(jPanel7Layout.createSequentialGroup()
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 5, Short.MAX_VALUE)
                                 .addComponent(jLabel4)))
                         .addGap(28, 28, 28))
                     .addGroup(jPanel7Layout.createSequentialGroup()
                         .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jDateChooser4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE))
+                            .addComponent(dateDen, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnLoc, javax.swing.GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE))
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
 
         jPanel4.add(jPanel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 480, -1, 80));
 
-        jTextField1.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
-        jPanel4.add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 510, 290, 50));
+        txtTimKiem.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
+        jPanel4.add(txtTimKiem, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 510, 290, 50));
 
         jLabel2.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
         jLabel2.setText("Tìm kiếm");
@@ -451,21 +525,22 @@ public class QLPhieuMuon extends javax.swing.JPanel {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton btnLoc;
+    private javax.swing.JButton btnMoiCTPM;
+    private javax.swing.JButton btnMoiPM;
+    private javax.swing.JButton btnSuaCTPM;
+    private javax.swing.JButton btnSuaPM;
+    private javax.swing.JButton btnThemCTPM;
+    private javax.swing.JButton btnThemPM;
+    private javax.swing.ButtonGroup btnTrangThai;
+    private javax.swing.JButton btnXoaCTPM;
+    private javax.swing.JButton btnXoaPM;
+    private javax.swing.JComboBox<String> cboDocGia;
+    private com.toedter.calendar.JDateChooser dateDen;
+    private com.toedter.calendar.JDateChooser dateNgayMuon;
+    private com.toedter.calendar.JDateChooser dateNgayTra;
+    private com.toedter.calendar.JDateChooser dateTu;
     private javax.swing.JButton jButton10;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
-    private javax.swing.JButton jButton7;
-    private javax.swing.JButton jButton8;
-    private javax.swing.JButton jButton9;
-    private javax.swing.JComboBox<String> jComboBox1;
-    private com.toedter.calendar.JDateChooser jDateChooser1;
-    private com.toedter.calendar.JDateChooser jDateChooser3;
-    private com.toedter.calendar.JDateChooser jDateChooser4;
-    private com.toedter.calendar.JDateChooser jDateChooser5;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -485,18 +560,18 @@ public class QLPhieuMuon extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
-    private javax.swing.JRadioButton jRadioButton1;
-    private javax.swing.JRadioButton jRadioButton3;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTable jTable2;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
-    private javax.swing.JTextField jTextField5;
     private com.qltv.swing.PanelBorder panelBorder1;
+    private javax.swing.JRadioButton rdoMuon;
+    private javax.swing.JRadioButton rdoTra;
+    private javax.swing.JTable tblPM;
+    private javax.swing.JTable tblPMCT;
+    private javax.swing.JTextField txtMaPM;
     private javax.swing.JTextField txtNhanVien;
+    private javax.swing.JTextField txtSoLuong;
+    private javax.swing.JTextField txtTenSach;
+    private javax.swing.JTextField txtTimKiem;
     // End of variables declaration//GEN-END:variables
 }

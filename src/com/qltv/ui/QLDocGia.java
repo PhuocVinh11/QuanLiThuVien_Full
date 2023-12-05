@@ -69,7 +69,7 @@ public class QLDocGia extends javax.swing.JPanel {
         int i = tblDSDocGia.getSelectedRow();
         if (i > -1) {
             try {
-                txtDiaChi.setText(tblDSDocGia.getValueAt(i, 1) + "");
+                txtTenDG2.setText(tblDSDocGia.getValueAt(i, 1) + "");
                 txtSoDT.setText(tblDSDocGia.getValueAt(i, 4) + "");
                 txtDiaChi.setText(tblDSDocGia.getValueAt(i, 3) + "");
                 if (String.valueOf(tblDSDocGia.getValueAt(i, 2)) == "Nam") {
@@ -118,9 +118,9 @@ public class QLDocGia extends javax.swing.JPanel {
 //        }
     }
 
-    void newDG() {
+    void clearformDG() {
         txtMaDG.setText("");
-        txtDiaChi.setText("");
+        txtTenDG2.setText("");
         txtSoDT.setText("");
         txtDiaChi.setText("");
         rdoNam.setSelected(false);
@@ -133,7 +133,7 @@ public class QLDocGia extends javax.swing.JPanel {
 //        dgdao.deleteTTV(id);
         dgdao.delete(id);
         this.fillTableDG();
-        this.newDG();
+        this.clearformDG();
 //        this.getTableTheThuVien();
         MsgBox.alert(this, "Xóa thành công");
     }
@@ -284,10 +284,10 @@ public class QLDocGia extends javax.swing.JPanel {
         jLabel9 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea2 = new javax.swing.JTextArea();
-        jButton5 = new javax.swing.JButton();
-        jButton8 = new javax.swing.JButton();
-        jButton6 = new javax.swing.JButton();
-        jButton7 = new javax.swing.JButton();
+        btnMoiTTV = new javax.swing.JButton();
+        btnThemTTV = new javax.swing.JButton();
+        btnXoaTTV = new javax.swing.JButton();
+        btnSuaTTV = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
         jPanel10 = new javax.swing.JPanel();
         rdoNam = new javax.swing.JRadioButton();
@@ -299,10 +299,10 @@ public class QLDocGia extends javax.swing.JPanel {
         txtDiaChi = new javax.swing.JTextField();
         txtSoDT = new javax.swing.JTextField();
         txtTenDG2 = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
+        btnSuaDG = new javax.swing.JButton();
+        btnXoaDG = new javax.swing.JButton();
+        btnMoiDG = new javax.swing.JButton();
+        btnThemDG = new javax.swing.JButton();
         jPanel5 = new javax.swing.JPanel();
         jPanel6 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -352,6 +352,7 @@ public class QLDocGia extends javax.swing.JPanel {
 
         txtMaDG.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
         txtMaDG.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 0, 0)));
+        txtMaDG.setEnabled(false);
         jPanel4.add(txtMaDG, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 60, 320, 40));
 
         jLabel9.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
@@ -366,25 +367,45 @@ public class QLDocGia extends javax.swing.JPanel {
 
         jPanel4.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 60, 300, 40));
 
-        jButton5.setBackground(new java.awt.Color(204, 153, 0));
-        jButton5.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
-        jButton5.setText("Mới");
-        jPanel4.add(jButton5, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 190, -1, -1));
+        btnMoiTTV.setBackground(new java.awt.Color(204, 153, 0));
+        btnMoiTTV.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
+        btnMoiTTV.setText("Mới");
+        btnMoiTTV.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMoiTTVActionPerformed(evt);
+            }
+        });
+        jPanel4.add(btnMoiTTV, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 190, -1, -1));
 
-        jButton8.setBackground(new java.awt.Color(204, 153, 0));
-        jButton8.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
-        jButton8.setText("Thêm");
-        jPanel4.add(jButton8, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 40, -1, -1));
+        btnThemTTV.setBackground(new java.awt.Color(204, 153, 0));
+        btnThemTTV.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
+        btnThemTTV.setText("Thêm");
+        btnThemTTV.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnThemTTVActionPerformed(evt);
+            }
+        });
+        jPanel4.add(btnThemTTV, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 40, -1, -1));
 
-        jButton6.setBackground(new java.awt.Color(204, 153, 0));
-        jButton6.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
-        jButton6.setText("Xóa");
-        jPanel4.add(jButton6, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 140, -1, -1));
+        btnXoaTTV.setBackground(new java.awt.Color(204, 153, 0));
+        btnXoaTTV.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
+        btnXoaTTV.setText("Xóa");
+        btnXoaTTV.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnXoaTTVActionPerformed(evt);
+            }
+        });
+        jPanel4.add(btnXoaTTV, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 140, -1, -1));
 
-        jButton7.setBackground(new java.awt.Color(204, 153, 0));
-        jButton7.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
-        jButton7.setText("Sửa");
-        jPanel4.add(jButton7, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 90, -1, -1));
+        btnSuaTTV.setBackground(new java.awt.Color(204, 153, 0));
+        btnSuaTTV.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
+        btnSuaTTV.setText("Sửa");
+        btnSuaTTV.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSuaTTVActionPerformed(evt);
+            }
+        });
+        jPanel4.add(btnSuaTTV, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 90, -1, -1));
 
         jLabel5.setFont(new java.awt.Font("Times New Roman", 3, 36)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(153, 102, 0));
@@ -432,29 +453,45 @@ public class QLDocGia extends javax.swing.JPanel {
         txtTenDG2.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 0, 0)));
         jPanel10.add(txtTenDG2, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 60, 320, 40));
 
-        jButton1.setBackground(new java.awt.Color(204, 153, 0));
-        jButton1.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
-        jButton1.setText("Sửa");
-        jButton1.setPreferredSize(new java.awt.Dimension(72, 29));
-        jPanel10.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 90, -1, -1));
+        btnSuaDG.setBackground(new java.awt.Color(204, 153, 0));
+        btnSuaDG.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
+        btnSuaDG.setText("Sửa");
+        btnSuaDG.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSuaDGActionPerformed(evt);
+            }
+        });
+        jPanel10.add(btnSuaDG, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 90, -1, -1));
 
-        jButton2.setBackground(new java.awt.Color(204, 153, 0));
-        jButton2.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
-        jButton2.setText("Xóa");
-        jButton2.setPreferredSize(new java.awt.Dimension(72, 29));
-        jPanel10.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 140, -1, -1));
+        btnXoaDG.setBackground(new java.awt.Color(204, 153, 0));
+        btnXoaDG.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
+        btnXoaDG.setText("Xóa");
+        btnXoaDG.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnXoaDGActionPerformed(evt);
+            }
+        });
+        jPanel10.add(btnXoaDG, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 140, -1, -1));
 
-        jButton3.setBackground(new java.awt.Color(204, 153, 0));
-        jButton3.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
-        jButton3.setText("Mới");
-        jButton3.setPreferredSize(new java.awt.Dimension(72, 29));
-        jPanel10.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 190, -1, -1));
+        btnMoiDG.setBackground(new java.awt.Color(204, 153, 0));
+        btnMoiDG.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
+        btnMoiDG.setText("Mới");
+        btnMoiDG.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMoiDGActionPerformed(evt);
+            }
+        });
+        jPanel10.add(btnMoiDG, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 190, -1, -1));
 
-        jButton4.setBackground(new java.awt.Color(204, 153, 0));
-        jButton4.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
-        jButton4.setText("Thêm");
-        jButton4.setPreferredSize(new java.awt.Dimension(72, 29));
-        jPanel10.add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 40, -1, -1));
+        btnThemDG.setBackground(new java.awt.Color(204, 153, 0));
+        btnThemDG.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
+        btnThemDG.setText("Thêm");
+        btnThemDG.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnThemDGActionPerformed(evt);
+            }
+        });
+        jPanel10.add(btnThemDG, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 40, -1, -1));
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -612,19 +649,51 @@ public class QLDocGia extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_tblDSTheTVMouseClicked
 
+    private void btnMoiDGActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMoiDGActionPerformed
+        clearformDG();
+    }//GEN-LAST:event_btnMoiDGActionPerformed
+
+    private void btnThemDGActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThemDGActionPerformed
+        insertDG();
+    }//GEN-LAST:event_btnThemDGActionPerformed
+
+    private void btnThemTTVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThemTTVActionPerformed
+        insertTTV();
+    }//GEN-LAST:event_btnThemTTVActionPerformed
+
+    private void btnSuaTTVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSuaTTVActionPerformed
+        updateTTV();
+    }//GEN-LAST:event_btnSuaTTVActionPerformed
+
+    private void btnXoaTTVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXoaTTVActionPerformed
+        deleteTTV();
+    }//GEN-LAST:event_btnXoaTTVActionPerformed
+
+    private void btnMoiTTVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMoiTTVActionPerformed
+        clearForm();
+    }//GEN-LAST:event_btnMoiTTVActionPerformed
+
+    private void btnSuaDGActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSuaDGActionPerformed
+        updateDG();
+    }//GEN-LAST:event_btnSuaDGActionPerformed
+
+    private void btnXoaDGActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXoaDGActionPerformed
+        deleteDG();
+    }//GEN-LAST:event_btnXoaDGActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup btgGioiTinh;
+    private javax.swing.JButton btnMoiDG;
+    private javax.swing.JButton btnMoiTTV;
+    private javax.swing.JButton btnSuaDG;
+    private javax.swing.JButton btnSuaTTV;
+    private javax.swing.JButton btnThemDG;
+    private javax.swing.JButton btnThemTTV;
+    private javax.swing.JButton btnXoaDG;
+    private javax.swing.JButton btnXoaTTV;
     private com.toedter.calendar.JDateChooser dateNgayBD;
     private com.toedter.calendar.JDateChooser dateNgayKT;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
-    private javax.swing.JButton jButton7;
-    private javax.swing.JButton jButton8;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;

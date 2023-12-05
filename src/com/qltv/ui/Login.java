@@ -67,7 +67,7 @@ public class Login extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         viewPass = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
+        lblQuenMK = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         txtMaNV = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
@@ -101,10 +101,18 @@ public class Login extends javax.swing.JFrame {
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/qltv/icon/hinhnenlogin.jpg"))); // NOI18N
         panelSlide1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 560, 500));
 
-        jLabel3.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
-        jLabel3.setForeground(new java.awt.Color(215, 163, 90));
-        jLabel3.setText("Quên mật khẩu ?");
-        panelSlide1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(820, 310, -1, -1));
+        lblQuenMK.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
+        lblQuenMK.setForeground(new java.awt.Color(215, 163, 90));
+        lblQuenMK.setText("Quên mật khẩu ?");
+        lblQuenMK.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lblQuenMKMouseClicked(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                lblQuenMKMouseExited(evt);
+            }
+        });
+        panelSlide1.add(lblQuenMK, new org.netbeans.lib.awtextra.AbsoluteConstraints(820, 310, -1, -1));
 
         jLabel5.setForeground(new java.awt.Color(215, 163, 90));
         jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/qltv/icon/close_20px.png"))); // NOI18N
@@ -116,6 +124,7 @@ public class Login extends javax.swing.JFrame {
         panelSlide1.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(970, 10, -1, -1));
 
         txtMaNV.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
+        txtMaNV.setText("lynh");
         txtMaNV.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 0, 0)));
         panelSlide1.add(txtMaNV, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 170, 310, 40));
 
@@ -138,6 +147,7 @@ public class Login extends javax.swing.JFrame {
         panelSlide1.add(btnLogin, new org.netbeans.lib.awtextra.AbsoluteConstraints(720, 350, 130, 40));
 
         txtMatKhau.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
+        txtMatKhau.setText("123456");
         txtMatKhau.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 0, 0)));
         panelSlide1.add(txtMatKhau, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 250, 310, 40));
 
@@ -195,6 +205,14 @@ public class Login extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnLoginActionPerformed
 
+    private void lblQuenMKMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblQuenMKMouseClicked
+        
+    }//GEN-LAST:event_lblQuenMKMouseClicked
+
+    private void lblQuenMKMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblQuenMKMouseExited
+        
+    }//GEN-LAST:event_lblQuenMKMouseExited
+
 
     /**
      * @param args the command line arguments
@@ -237,10 +255,10 @@ public class Login extends javax.swing.JFrame {
     private javax.swing.JButton btnLogin;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel lblQuenMK;
     private com.qltv.swing.PanelSlide panelSlide1;
     private javax.swing.JTextField txtMaNV;
     private javax.swing.JPasswordField txtMatKhau;

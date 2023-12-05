@@ -78,7 +78,7 @@ public class QLNhaXuatBan extends javax.swing.JPanel {
     
        public void updateNXB(){
            try{
-        NhaXuatBan n = this.getForm();
+        NhaXuatBan n = this.getForm1();
         System.out.println(n.toString());
         nxbdao.update(n);
         MsgBox.alert(this, "Cập nhật nhà xuất bản thành công!");
@@ -97,8 +97,10 @@ public class QLNhaXuatBan extends javax.swing.JPanel {
     }
     
     public void clearForm(){
-
-    
+        txtTen.setText("");
+        txtDiaChi.setText("");
+        txtSDT.setText("");
+        lblAnh.setIcon(null);
     }
     
 //    private void setForm(NhaXuatBan nxb) {
@@ -112,6 +114,16 @@ public class QLNhaXuatBan extends javax.swing.JPanel {
 //        }
 //        
 //    }
+    
+    private NhaXuatBan getForm1() {
+        NhaXuatBan nxb = new NhaXuatBan();
+        nxb.setMa((int) tblDSNXB.getValueAt(tblDSNXB.getSelectedRow(), 0));
+        nxb.setTen(txtTen.getText());
+        nxb.setDiachi(txtDiaChi.getText());
+        nxb.setSdt(txtSDT.getText());
+        nxb.setHinh(lblAnh.getToolTipText());
+        return nxb;
+    }
     
     private NhaXuatBan getForm() {
         NhaXuatBan nxb = new NhaXuatBan();
@@ -158,11 +170,10 @@ public class QLNhaXuatBan extends javax.swing.JPanel {
         jLabel5 = new javax.swing.JLabel();
         txtTen3 = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
-        jButton20 = new javax.swing.JButton();
-        jButton17 = new javax.swing.JButton();
-        jButton18 = new javax.swing.JButton();
-        jButton19 = new javax.swing.JButton();
-        jButton21 = new javax.swing.JButton();
+        btnSua = new javax.swing.JButton();
+        btnXoa = new javax.swing.JButton();
+        btnMoi = new javax.swing.JButton();
+        btnThem = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -180,7 +191,7 @@ public class QLNhaXuatBan extends javax.swing.JPanel {
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, true, true, true, true
+                false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -245,30 +256,45 @@ public class QLNhaXuatBan extends javax.swing.JPanel {
         jLabel6.setText("Ảnh");
         add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 110, -1, -1));
 
-        jButton20.setBackground(new java.awt.Color(204, 153, 0));
-        jButton20.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
-        jButton20.setText("Xóa ảnh");
-        add(jButton20, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 460, -1, -1));
+        btnSua.setBackground(new java.awt.Color(204, 153, 0));
+        btnSua.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
+        btnSua.setText("Sửa");
+        btnSua.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSuaActionPerformed(evt);
+            }
+        });
+        add(btnSua, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 480, -1, -1));
 
-        jButton17.setBackground(new java.awt.Color(204, 153, 0));
-        jButton17.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
-        jButton17.setText("Sửa");
-        add(jButton17, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 560, -1, -1));
+        btnXoa.setBackground(new java.awt.Color(204, 153, 0));
+        btnXoa.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
+        btnXoa.setText("Xóa");
+        btnXoa.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnXoaActionPerformed(evt);
+            }
+        });
+        add(btnXoa, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 480, -1, -1));
 
-        jButton18.setBackground(new java.awt.Color(204, 153, 0));
-        jButton18.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
-        jButton18.setText("Xóa");
-        add(jButton18, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 560, -1, -1));
+        btnMoi.setBackground(new java.awt.Color(204, 153, 0));
+        btnMoi.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
+        btnMoi.setText("Mới");
+        btnMoi.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMoiActionPerformed(evt);
+            }
+        });
+        add(btnMoi, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 480, -1, -1));
 
-        jButton19.setBackground(new java.awt.Color(204, 153, 0));
-        jButton19.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
-        jButton19.setText("Mới");
-        add(jButton19, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 560, -1, -1));
-
-        jButton21.setBackground(new java.awt.Color(204, 153, 0));
-        jButton21.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
-        jButton21.setText("Thêm");
-        add(jButton21, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 560, -1, -1));
+        btnThem.setBackground(new java.awt.Color(204, 153, 0));
+        btnThem.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
+        btnThem.setText("Thêm");
+        btnThem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnThemActionPerformed(evt);
+            }
+        });
+        add(btnThem, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 480, -1, -1));
     }// </editor-fold>//GEN-END:initComponents
 
     private void tblDSNXBMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblDSNXBMouseClicked
@@ -283,13 +309,28 @@ public class QLNhaXuatBan extends javax.swing.JPanel {
         selectIcon();
     }//GEN-LAST:event_lblAnhMouseClicked
 
+    private void btnThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThemActionPerformed
+        insert();
+    }//GEN-LAST:event_btnThemActionPerformed
+
+    private void btnSuaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSuaActionPerformed
+        updateNXB();
+    }//GEN-LAST:event_btnSuaActionPerformed
+
+    private void btnXoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXoaActionPerformed
+        delete();
+    }//GEN-LAST:event_btnXoaActionPerformed
+
+    private void btnMoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMoiActionPerformed
+        clearForm();
+    }//GEN-LAST:event_btnMoiActionPerformed
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton17;
-    private javax.swing.JButton jButton18;
-    private javax.swing.JButton jButton19;
-    private javax.swing.JButton jButton20;
-    private javax.swing.JButton jButton21;
+    private javax.swing.JButton btnMoi;
+    private javax.swing.JButton btnSua;
+    private javax.swing.JButton btnThem;
+    private javax.swing.JButton btnXoa;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

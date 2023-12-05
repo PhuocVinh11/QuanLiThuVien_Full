@@ -10,12 +10,13 @@ package com.qltv.entity;
  */
 public class PhieuMuon {
     int maPM,maNV,maDG;
-    String trangThai,ngayMuon;
+    boolean trangThai;
+    String ngayMuon;
 
     public PhieuMuon() {
     }
 
-    public PhieuMuon(int maPM, int maNV, int maDG, String trangThai, String ngayMuon) {
+    public PhieuMuon(int maPM, int maNV, int maDG, boolean trangThai, String ngayMuon) {
         this.maPM = maPM;
         this.maNV = maNV;
         this.maDG = maDG;
@@ -47,11 +48,11 @@ public class PhieuMuon {
         this.maDG = maDG;
     }
 
-    public String getTrangThai() {
+    public boolean isTrangThai() {
         return trangThai;
     }
 
-    public void setTrangThai(String trangThai) {
+    public void setTrangThai(boolean trangThai) {
         this.trangThai = trangThai;
     }
 
@@ -62,6 +63,8 @@ public class PhieuMuon {
     public void setNgayMuon(String ngayMuon) {
         this.ngayMuon = ngayMuon;
     }
+
+    
     
     
 }

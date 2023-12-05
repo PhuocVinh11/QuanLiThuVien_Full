@@ -5,6 +5,7 @@
 package com.qltv.dao;
 
 import com.qltv.entity.LoaiSach;
+import com.qltv.entity.NhaXuatBan;
 import com.qltv.entity.Sach;
 import com.qltv.utils.XJdbc;
 import java.sql.*;
@@ -22,15 +23,7 @@ public class SachDAO {
     public static String DELETE_SQL = "delete from Sach where MaSach = ?";
     public static String SELECT_BY_ID = "select * from Sach where MaSach = ?";
     public static String SELECT_BY_LOAI = "select TenLoai from Loai where MaLoai = ?";
-    public static String SELECT_ALL_SQL = "select A.MaSach,A.TenSach, B.TenLoai,C.TenNXB,D.TenTacGia,NamXB,SoLuong,E.ViTri,GhiChu  \n" +
-                                            "from Sach A inner join Loai B\n" +
-                                            "on A.MaLoai = B.MaLoai\n" +
-                                            "inner join NhaXuatBan C\n" +
-                                            "on A.MaNXB = C.MaNXB\n" +
-                                            "inner join TacGia D\n" +
-                                            "on A.MaTacGia = D.MaTacGia\n" +
-                                            "inner join KeSach E\n" +
-                                            "on A.MaKe = E.MaKe";
+    public static String SELECT_ALL_SQL = "select * from Sach ";
     
     public void insert(Sach entity){
         XJdbc.update(INSERT_SQL, 
@@ -63,8 +56,50 @@ public class SachDAO {
         XJdbc.update(DELETE_SQL, id);
     }
     
+    	public static int getsoluongsach(int masach) {
+		try {
+			int soluong = 0;
+			Connection conn = XJdbc.getConnection();
+			String sql = "select SoLuong from Sach where MaSach = ? ";
+			PreparedStatement pstm = conn.prepareStatement(sql);
+			pstm.setInt(1, masach);
+			ResultSet rs = pstm.executeQuery();
+			if (rs.next()) {
+				soluong = rs.getInt("SoLuong");
+			}
+			return soluong;
+		} catch (Exception e) {
+			return -1;
+		}
+
+	}
+    
     public List<Sach> selectAll(){
         return selectBySql(SELECT_ALL_SQL);
+    }
+    
+    public List<String> selectById() {
+        String SELECT_ID = "select TenNXB from NhaXuatBan";
+        return selectByName( SELECT_ID);
+    }
+    
+    protected ArrayList<String> selectByName(String sql, Object... args) {
+        ArrayList<String> list = new ArrayList<>();
+        try {
+            try {
+                rs = XJdbc.query(sql);
+                while (rs.next()) {
+                    String nxb = rs.getString("TenNXB");
+                    list.add(nxb);
+                                    }
+            } finally {
+                rs.getStatement().getConnection().close();
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex);
+//            throw new RuntimeException(ex);
+        }
+        return list;
     }
     
     public Sach selectById(String key) {

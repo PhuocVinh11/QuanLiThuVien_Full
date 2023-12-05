@@ -374,6 +374,11 @@ public class QLChung extends javax.swing.JPanel {
         jButton3.setBackground(new java.awt.Color(204, 153, 0));
         jButton3.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
         jButton3.setText("Mới");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
         pnlLoaiSach.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(660, 210, -1, -1));
 
         jButton4.setBackground(new java.awt.Color(204, 153, 0));
@@ -556,10 +561,14 @@ public class QLChung extends javax.swing.JPanel {
 
     private void tblLoaiMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblLoaiMouseClicked
         // TODO add your handling code here:
-        if(evt.getClickCount() == 1){
+        if(evt.getClickCount() == 2){
             clickTableLoai();
         }
     }//GEN-LAST:event_tblLoaiMouseClicked
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton3ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -309,10 +309,10 @@ public class QLSach extends javax.swing.JPanel {
         jScrollPane1 = new javax.swing.JScrollPane();
         txtGhiChu = new javax.swing.JTextArea();
         jLabel9 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
+        btnSua = new javax.swing.JButton();
+        btnXoa = new javax.swing.JButton();
+        btnMoi = new javax.swing.JButton();
+        btnThem = new javax.swing.JButton();
         txtMa = new javax.swing.JTextField();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -438,25 +438,45 @@ public class QLSach extends javax.swing.JPanel {
         jLabel9.setText("Số lượng");
         pnlSach.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 300, -1, -1));
 
-        jButton1.setBackground(new java.awt.Color(204, 153, 0));
-        jButton1.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
-        jButton1.setText("Sửa");
-        pnlSach.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(700, 470, -1, -1));
+        btnSua.setBackground(new java.awt.Color(204, 153, 0));
+        btnSua.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
+        btnSua.setText("Sửa");
+        btnSua.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSuaActionPerformed(evt);
+            }
+        });
+        pnlSach.add(btnSua, new org.netbeans.lib.awtextra.AbsoluteConstraints(700, 470, -1, -1));
 
-        jButton2.setBackground(new java.awt.Color(204, 153, 0));
-        jButton2.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
-        jButton2.setText("Xóa");
-        pnlSach.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(790, 470, -1, -1));
+        btnXoa.setBackground(new java.awt.Color(204, 153, 0));
+        btnXoa.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
+        btnXoa.setText("Xóa");
+        btnXoa.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnXoaActionPerformed(evt);
+            }
+        });
+        pnlSach.add(btnXoa, new org.netbeans.lib.awtextra.AbsoluteConstraints(790, 470, -1, -1));
 
-        jButton3.setBackground(new java.awt.Color(204, 153, 0));
-        jButton3.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
-        jButton3.setText("Mới");
-        pnlSach.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(880, 470, -1, -1));
+        btnMoi.setBackground(new java.awt.Color(204, 153, 0));
+        btnMoi.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
+        btnMoi.setText("Mới");
+        btnMoi.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMoiActionPerformed(evt);
+            }
+        });
+        pnlSach.add(btnMoi, new org.netbeans.lib.awtextra.AbsoluteConstraints(880, 470, -1, -1));
 
-        jButton4.setBackground(new java.awt.Color(204, 153, 0));
-        jButton4.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
-        jButton4.setText("Thêm");
-        pnlSach.add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 470, -1, -1));
+        btnThem.setBackground(new java.awt.Color(204, 153, 0));
+        btnThem.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
+        btnThem.setText("Thêm");
+        btnThem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnThemActionPerformed(evt);
+            }
+        });
+        pnlSach.add(btnThem, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 470, -1, -1));
 
         txtMa.setText("0");
         pnlSach.add(txtMa, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 470, -1, -1));
@@ -481,7 +501,7 @@ public class QLSach extends javax.swing.JPanel {
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, true, true, true, true, true, true, true, true
+                false, false, false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -518,6 +538,11 @@ public class QLSach extends javax.swing.JPanel {
 
         jButton6.setBackground(new java.awt.Color(204, 153, 0));
         jButton6.setText(">>");
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
         jPanel2.add(jButton6, new org.netbeans.lib.awtextra.AbsoluteConstraints(900, 150, -1, -1));
 
         jButton7.setBackground(new java.awt.Color(204, 153, 0));
@@ -531,6 +556,11 @@ public class QLSach extends javax.swing.JPanel {
 
         jButton8.setBackground(new java.awt.Color(204, 153, 0));
         jButton8.setText("|<");
+        jButton8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton8ActionPerformed(evt);
+            }
+        });
         jPanel2.add(jButton8, new org.netbeans.lib.awtextra.AbsoluteConstraints(720, 150, -1, -1));
 
         tabs.addTab("DANH SÁCH", jPanel2);
@@ -585,27 +615,54 @@ public class QLSach extends javax.swing.JPanel {
 
     private void tblSachMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblSachMouseClicked
         // TODO add your handling code here:
-        clickTableSach();
+        if (evt.getClickCount() == 2) {
+            clickTableSach();
+        }
     }//GEN-LAST:event_tblSachMouseClicked
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        // TODO add your handling code here:
+        prev();
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
-        // TODO add your handling code here:
+        last();
     }//GEN-LAST:event_jButton7ActionPerformed
+
+    private void btnThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThemActionPerformed
+        insert();
+    }//GEN-LAST:event_btnThemActionPerformed
+
+    private void btnSuaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSuaActionPerformed
+        update();
+    }//GEN-LAST:event_btnSuaActionPerformed
+
+    private void btnXoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXoaActionPerformed
+        delete();
+    }//GEN-LAST:event_btnXoaActionPerformed
+
+    private void btnMoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMoiActionPerformed
+        clearForm();
+    }//GEN-LAST:event_btnMoiActionPerformed
+
+    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
+        first();
+    }//GEN-LAST:event_jButton8ActionPerformed
+
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        // TODO add your handling code here:
+        next();
+    }//GEN-LAST:event_jButton6ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnMoi;
+    private javax.swing.JButton btnSua;
+    private javax.swing.JButton btnThem;
+    private javax.swing.JButton btnXoa;
     private javax.swing.JComboBox<String> cboKeSach;
     private javax.swing.JComboBox<String> cboLoai;
     private javax.swing.JComboBox<String> cboNXB1;
     private javax.swing.JComboBox<String> cboTacGia;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;

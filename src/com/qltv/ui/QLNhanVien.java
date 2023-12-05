@@ -356,7 +356,7 @@ public class QLNhanVien extends javax.swing.JPanel {
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, true, true, true, true, true
+                false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -427,18 +427,38 @@ public class QLNhanVien extends javax.swing.JPanel {
         jButton1.setBackground(new java.awt.Color(204, 153, 0));
         jButton1.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
         jButton1.setText("Sửa");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jButton2.setBackground(new java.awt.Color(204, 153, 0));
         jButton2.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
         jButton2.setText("Xóa");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         jButton3.setBackground(new java.awt.Color(204, 153, 0));
         jButton3.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
         jButton3.setText("Mới");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
         jButton4.setBackground(new java.awt.Color(204, 153, 0));
         jButton4.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
         jButton4.setText("Thêm");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout pnlChungLayout = new javax.swing.GroupLayout(pnlChung);
         pnlChung.setLayout(pnlChungLayout);
@@ -532,7 +552,7 @@ public class QLNhanVien extends javax.swing.JPanel {
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, true, true, true, true
+                false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -575,21 +595,41 @@ public class QLNhanVien extends javax.swing.JPanel {
         jButton5.setBackground(new java.awt.Color(204, 153, 0));
         jButton5.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
         jButton5.setText("Sửa");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
         pnlTaiKhoan.add(jButton5, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 520, -1, -1));
 
         jButton6.setBackground(new java.awt.Color(204, 153, 0));
         jButton6.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
         jButton6.setText("Xóa");
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
         pnlTaiKhoan.add(jButton6, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 520, -1, -1));
 
         jButton7.setBackground(new java.awt.Color(204, 153, 0));
         jButton7.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
         jButton7.setText("Mới");
+        jButton7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton7ActionPerformed(evt);
+            }
+        });
         pnlTaiKhoan.add(jButton7, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 520, -1, -1));
 
         jButton8.setBackground(new java.awt.Color(204, 153, 0));
         jButton8.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
         jButton8.setText("Thêm");
+        jButton8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton8ActionPerformed(evt);
+            }
+        });
         pnlTaiKhoan.add(jButton8, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 520, -1, -1));
 
         txtPass1.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
@@ -650,10 +690,42 @@ public class QLNhanVien extends javax.swing.JPanel {
 
     private void tblTaiKhoanMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblTaiKhoanMouseClicked
         // TODO add your handling code here:
-        if(evt.getClickCount() == 1){
+        if(evt.getClickCount() == 2){
             clickTableTK();
         }
     }//GEN-LAST:event_tblTaiKhoanMouseClicked
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        clearFormNV();
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        insertNV();
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        updateNV();
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        deleteNV();
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
+        insertTK();
+    }//GEN-LAST:event_jButton8ActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        updateTK();
+    }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        deleteTK();
+    }//GEN-LAST:event_jButton6ActionPerformed
+
+    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+        clearFormTK();
+    }//GEN-LAST:event_jButton7ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
