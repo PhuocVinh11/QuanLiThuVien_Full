@@ -63,13 +63,14 @@ public class TacGiaDAO {
         ArrayList<TacGia> list = new ArrayList<>();
         try {
             try {
-                rs = XJdbc.query(sql);
+                rs = XJdbc.query(sql,args);
                 while (rs.next()) {
                     TacGia s = new TacGia();
                     s.setMa(rs.getInt(1));
                     s.setTen(rs.getString(2));
                     s.setNamsinh(rs.getInt(3));
                     s.setQuequan(rs.getString(4));
+                    s.setHinh(rs.getString(5));
                 list.add(s);
                 }
             } finally {
@@ -105,4 +106,34 @@ public class TacGiaDAO {
         }
         return list;
     }
+    
+    public String convertToTenTacGia(int maTG) {
+    String tenTG = "";
+    try {
+        String sql = "SELECT TenTacGia FROM TacGia WHERE MaTacGia = ?";
+        try (ResultSet resultSet = XJdbc.query(sql, maTG)) {
+            if (resultSet.next()) {
+                tenTG = resultSet.getString("TenTacGia");
+            }
+        }
+    } catch (SQLException ex) {
+        ex.printStackTrace();
+    }
+    return tenTG;
+}
+    
+    public int convertToMaTG(String tenKS) {
+    int maKS = 0;
+    try {
+        String sql = "SELECT MaTacGia FROM TacGia WHERE TenTacGia like ?";
+        try (ResultSet resultSet = XJdbc.query(sql, tenKS)) {
+            if (resultSet.next()) {
+                maKS = resultSet.getInt("MaTacGia");
+            }
+        }
+    } catch (SQLException ex) {
+        ex.printStackTrace();
+    }
+    return maKS;
+}
 }

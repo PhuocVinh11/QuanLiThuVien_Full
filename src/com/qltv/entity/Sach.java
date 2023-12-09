@@ -9,13 +9,13 @@ package com.qltv.entity;
  * @author Admin
  */
 public class Sach {
-    String ma,ten,hinh,ghichu, maNXB, maLoai , maTG,maKe;
-    int nam, soluong;
+    String ten,hinh,ghichu;
+    int nam, soluong, maNXB, maLoai , maTG,maKe,ma;
 
     public Sach() {
     }
 
-    public Sach(String ma, String ten, String hinh, String ghichu, String maLoai, String maNXB, String maTG, String maKe, int nam, int soluong) {
+    public Sach(int ma, String ten, String hinh, String ghichu, int maLoai, int maNXB, int maTG, int maKe, int nam, int soluong) {
         this.ma = ma;
         this.ten = ten;
         this.hinh = hinh;
@@ -28,13 +28,7 @@ public class Sach {
         this.soluong = soluong;
     }
 
-    public String getMa() {
-        return ma;
-    }
-
-    public void setMa(String ma) {
-        this.ma = ma;
-    }
+    
 
     public String getTen() {
         return ten;
@@ -60,37 +54,47 @@ public class Sach {
         this.ghichu = ghichu;
     }
 
-    public String getMaLoai() {
+    public int getMaLoai() {
         return maLoai;
     }
 
-    public void setMaLoai(String maLoai) {
+    public void setMaLoai(int maLoai) {
         this.maLoai = maLoai;
     }
 
-    public String getMaNXB() {
+    public int getMaNXB() {
         return maNXB;
     }
 
-    public void setMaNXB(String maNXB) {
+    public void setMaNXB(int maNXB) {
         this.maNXB = maNXB;
     }
 
-    public String getMaTG() {
+    public int getMaTG() {
         return maTG;
     }
 
-    public void setMaTG(String maTG) {
+    public void setMaTG(int maTG) {
         this.maTG = maTG;
     }
 
-    public String getMaKe() {
+    public int getMaKe() {
         return maKe;
     }
 
-    public void setMaKe(String maKe) {
+    public void setMaKe(int maKe) {
         this.maKe = maKe;
     }
+
+    public int getMa() {
+        return ma;
+    }
+
+    public void setMa(int ma) {
+        this.ma = ma;
+    }
+
+    
 
     public int getNam() {
         return nam;

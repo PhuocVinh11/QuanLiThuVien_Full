@@ -139,5 +139,26 @@ public String convertToTenNCC(int maNCC) {
     }
     return tenNCC;
 }
+
+    public static NhaCungCap getNhacungcap(int ma) {
+		try {
+			NhaCungCap ncc = new NhaCungCap();
+			String sql = "select TenNCC from NhaCungCap where MaNCC = ?"; 
+			Connection conn = XJdbc.getConnection(); 
+			
+			PreparedStatement pstm = conn.prepareStatement(sql);
+			pstm.setInt(1, ma);
+			ResultSet rs = pstm.executeQuery(); 
+			if(rs.next()) {
+				ncc.setTenNCC(rs.getString("TenNCC"));
+			}
+			System.out.println(ncc);
+			return ncc; 
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			return null;
+		}
+	}
     }
 

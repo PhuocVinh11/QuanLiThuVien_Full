@@ -25,7 +25,7 @@ public class Form_Home extends javax.swing.JPanel {
     void init(){
         try{
             lblTen.setText("Tên đăng nhập: " + Auth.user.getUser());
-            lblChucVu.setText("Chức vụ: " + String.valueOf(Auth.user.isQuyen() ? "Nhân viên" : "Quản lý"));
+        lblChucVu.setText("Chức vụ: " + String.valueOf(Auth.user.isQuyen() ? "Quản lý" : "Nhân viên"));
         }catch(Exception e){
             MsgBox.alert(this, "Bạn phải đăng nhập trước khi sử dụng!");
         }

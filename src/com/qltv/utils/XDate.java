@@ -9,20 +9,26 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class XDate {
-     public static SimpleDateFormat formatter = new SimpleDateFormat();
+    
+     public static SimpleDateFormat sdf = new SimpleDateFormat();
 
-    public static Date toDate(String date, String pattern) {
+    public static Date toDate(String date, String... pattern) {
         try {
-            formatter.applyPattern(pattern);
-            return formatter.parse(date);
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
+            if (pattern.length > 0) {
+                sdf.applyPattern(pattern[0]);
+            }
+            if (date == null) {
+                return XDate.now();
+            }
+            return sdf.parse(date);
+        } catch (ParseException ex) {
+            throw new RuntimeException(ex);
         }
     }
 
     public static String toString(Date date, String pattern) {
-        formatter.applyPattern(pattern);
-        return formatter.format(date);
+        sdf.applyPattern(pattern);
+        return sdf.format(date);
     }
 
     public static Date addDays(Date date, long days) {

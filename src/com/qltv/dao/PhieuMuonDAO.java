@@ -85,6 +85,14 @@ public class PhieuMuonDAO {
         }
     }
     
+    public List<PhieuMuon> getPhieuMuonByDG(int selectedDG) {
+
+    // Sử dụng PreparedStatement để tránh SQL Injection
+    String sql = "SELECT * FROM PhieuMuon WHERE MaDocGia = ?";
+    return selectBySql(sql, selectedDG);
+    }
+    
+    
 //    public int selectNCC1(String id){
 //         List<Integer> list = selectByNCC1(SELECT_BY_NCC_ID, id);
 //        if(!list.isEmpty()){

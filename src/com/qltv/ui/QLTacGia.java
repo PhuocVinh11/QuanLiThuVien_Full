@@ -10,6 +10,8 @@ import com.qltv.entity.TacGia;
 import com.qltv.utils.Auth;
 import com.qltv.utils.MsgBox;
 import com.qltv.utils.XImage;
+import com.qltv.utils.XValidate;
+import java.awt.Color;
 import java.awt.Image;
 import java.io.File;
 import java.util.List;
@@ -17,9 +19,12 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JTable;
+import javax.swing.RowFilter;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 
 /**
  *
@@ -27,10 +32,10 @@ import javax.swing.table.DefaultTableModel;
  */
 public class QLTacGia extends javax.swing.JPanel {
 
-    List<TacGia> list;
     TacGiaDAO tgdao = new TacGiaDAO();
     int row = -1;
-    String imagePath = "";
+    JFileChooser FileChooser = new JFileChooser(System.getProperty("user.dir") + "\\src\\main\\logos");
+
     /**
      * Creates new form Form_1
      */
@@ -39,33 +44,32 @@ public class QLTacGia extends javax.swing.JPanel {
         this.fillTable();
         viewTable();
         lblTen.setText("Tên đăng nhập: " + Auth.user.getUser());
-            lblChucVu.setText("Chức vụ: " + String.valueOf(Auth.user.isQuyen() ? "Nhân viên" : "Quản lý"));
+        lblChucVu.setText("Chức vụ: " + String.valueOf(Auth.user.isQuyen() ? "Quản lý" : "Nhân viên"));
     }
 
-    
-     void viewTable() {
-        tblTacGia.getColumnModel().getColumn(0).setPreferredWidth(40);
-        tblTacGia.getColumnModel().getColumn(1).setPreferredWidth(160);
+    void viewTable() {
+        tblTacGia.getColumnModel().getColumn(0).setPreferredWidth(60);
+        tblTacGia.getColumnModel().getColumn(1).setPreferredWidth(140);
         tblTacGia.getColumnModel().getColumn(2).setPreferredWidth(80);
-        tblTacGia.getColumnModel().getColumn(3).setPreferredWidth(50);
-//        tblTacGia.getColumnModel().getColumn(4).setPreferredWidth(80);
-//        tblTacGia.getColumnModel().getColumn(5).setPreferredWidth(60);
-//        tblTacGia.getColumnModel().getColumn(6).setPreferredWidth(60);
-//        tblTacGia.getColumnModel().getColumn(7).setPreferredWidth(60);
+        tblTacGia.getColumnModel().getColumn(3).setPreferredWidth(60);
         tblTacGia.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
     }
-     
-    public void fillTable(){
+
+    /*
+     ĐỔ DỮ LIỆU LÊN BẢNG
+     */
+    public void fillTable() {
         DefaultTableModel model = (DefaultTableModel) tblTacGia.getModel();
         model.setRowCount(0);
-        try{
+        try {
             List<TacGia> list = tgdao.SelectAll();
             for (TacGia dg : list) {
                 Object[] row = {
                     dg.getMa(),
                     dg.getTen(),
                     dg.getNamsinh(),
-                    dg.getQuequan()
+                    dg.getQuequan(),
+                    dg.getHinh()
                 };
                 model.addRow(row);
             }
@@ -73,95 +77,56 @@ public class QLTacGia extends javax.swing.JPanel {
             MsgBox.alert(this, "Lỗi truy vấn dữ liệu sách!");
             e.printStackTrace();
         }
-        
-    }
-    
-    void clickTable(){
-        int i = tblTacGia.getSelectedRow();
-        TacGia tg = list.get(i);
-        if(i > -1){
-            txtTen.setText(tblTacGia.getValueAt(i, 1)+"");
-            txtNamSinh.setText(tblTacGia.getValueAt(i, 2)+"");
-            txtQueQuan.setText(tblTacGia.getValueAt(i, 3)+"");
-             this.hienThiHinhAnh(tg.getHinh());
-                imagePath = tg.getHinh();
-        }
-    }
-    
-    private void insert() {
-        TacGia model = getForm();
-        try {
-            tgdao.insert(model);
-            this.fillTable();
-            this.clearForm();
-            MsgBox.alert(this, "Thêm tác giả mới thành công!");
-        } catch (Exception e) {
-            MsgBox.alert(this, "Thêm tác giả mới thất bại!");
-            e.printStackTrace();
-        }
 
     }
 
-    private void update() {
-        TacGia model = getForm1();
+    void edit() {
         try {
-            tgdao.update(model);
-            this.fillTable();
-            MsgBox.alert(this, "Cập nhật tác giả thành công!");
+            int selectedRow = tblTacGia.getSelectedRow();
+            if (selectedRow >= 0) {
+                int masp = (int) tblTacGia.getValueAt(selectedRow, 0);
+                TacGia model = tgdao.selectByIds(masp);
+                if (model != null) {
+                    this.setForm(model);
+                }
+            } else {
+                MsgBox.alert(this, "Vui lòng chọn một hàng để chỉnh sửa.");
+            }
         } catch (Exception e) {
-            MsgBox.alert(this, "Cập nhật tác giả thất bại!");
+            MsgBox.alert(this, "Lỗi!");
             e.printStackTrace();
         }
     }
 
-    private void delete() {
+    /*
+    HÀM ĐỂ ĐƯA DỮ LIỆU TRÊN FORM
+     */
 
-        int c = tblTacGia.getSelectedRow();
-        int id = (int) tblTacGia.getValueAt(c, 0);
-        tgdao.delete(id);
-        this.fillTable();
-        this.clearForm();
-        MsgBox.alert(this, "Xóa thành công");
-    }
-
-    private void hienThiHinhAnh(String imagePath) {
-        ImageIcon imageIcon = new ImageIcon(
-                new ImageIcon(imagePath)
-                        .getImage()
-                        .getScaledInstance(
-                                lblHinh.getWidth(),
-                                lblHinh.getHeight(),
-                                Image.SCALE_DEFAULT));
-        lblHinh.setIcon(imageIcon);
-    }
-    
-    private void clearForm() {
-        txtTen.setText("");
-        txtNamSinh.setText("");
-        txtQueQuan.setText("");
-        this.hienThiHinhAnh(null);
+    private void setForm(TacGia cd) {
+        txtMaTG.setText(cd.getMa()+"");
+        txtTen.setText(cd.getTen());
+        txtNamSinh.setText(String.valueOf(cd.getNamsinh()));
+        txtQueQuan.setText(cd.getQuequan());
+        lblAnh.setIcon(XImage.readIconTG("NoImage.png"));
+        if (cd.getHinh() != null) {
+            lblAnh.setToolTipText(cd.getHinh());
+            lblAnh.setIcon(XImage.readIconTG(cd.getHinh()));
+        }
     }
 
     private TacGia getForm() {
-        TacGia cd = new TacGia();
-        cd.setTen(txtTen.getText());
-        cd.setNamsinh(Integer.parseInt(txtNamSinh.getText()+""));
-        cd.setQuequan(txtQueQuan.getText());
-        cd.setHinh(lblHinh.getToolTipText());
-        return cd;
+        TacGia s = new TacGia();
+        s.setMa(Integer.parseInt(txtMaTG.getText()));
+        s.setTen(txtTen.getText());
+        s.setNamsinh(Integer.parseInt(txtNamSinh.getText()));
+        s.setHinh(lblAnh.getToolTipText());
+        s.setQuequan(txtQueQuan.getText());
+        return s;
     }
-    
-    private TacGia getForm1() {
-        TacGia cd = new TacGia();
-        cd.setMa(Integer.parseInt(tblTacGia.getValueAt(tblTacGia.getSelectedRow(), 0)+""));
-        cd.setTen(txtTen.getText());
-        cd.setNamsinh(Integer.parseInt(txtNamSinh.getText()+""));
-        cd.setQuequan(txtQueQuan.getText());
-        cd.setHinh(lblHinh.getToolTipText());
-        return cd;
-    }
-    
-    private void selectIcon() {
+    /*
+    CHỌN ẢNH
+    */
+private void selectIcon() {
         JFileChooser fc = new JFileChooser("logos");
         FileFilter filter = new FileNameExtensionFilter("Image Files", "gif", "jpeg", "jpg", "png");
         fc.setFileFilter(filter);
@@ -169,11 +134,67 @@ public class QLTacGia extends javax.swing.JPanel {
         int kq = fc.showOpenDialog(fc);
         if (kq == JFileChooser.APPROVE_OPTION) {
             File file = fc.getSelectedFile();
-            XImage.saveIconCD(file); // lưu hình vào thư mục logos
-            ImageIcon icon = XImage.readIconCD(file.getName()); // đọc hình từ logos
-            lblHinh.setIcon(icon);
-            lblHinh.setToolTipText(file.getName()); // giữ tên hình trong tooltip
+            XImage.saveIconTG(file); // lưu hình vào thư mục logos
+            ImageIcon icon = XImage.readIconTG(file.getName()); // đọc hình từ logos
+            lblAnh.setIcon(icon);
+            lblAnh.setToolTipText(file.getName()); // giữ tên hình trong tooltip
         }
+    }
+
+    
+    void insert() {
+        //lấy thông tin trên form để
+        //thêm sản phẩm vào CSDL
+        TacGia model = getForm();
+        try {
+            tgdao.insert(model);
+            this.fillTable();
+            this.clearForm();
+            MsgBox.alert(this, "Thêm mới sản phẩm thành công");
+        } catch (Exception e) {
+            MsgBox.alert(this, "Thêm mới sản phẩm thất bại !");
+            e.printStackTrace();
+        }
+    }
+
+    void updateSP() {
+        //lấy thông tin trên form để
+        //cập nhật nhanVien theo maKH
+        TacGia model = getForm();
+        try {
+            tgdao.update(model);
+            this.fillTable();
+            this.clearForm();
+            MsgBox.alert(this, "Cập khách sản phẩm thành công");
+        } catch (Exception e) {
+            MsgBox.alert(this, "Cập nhật sản phẩm thất bại !");
+            e.printStackTrace();
+        }
+    }
+    
+    void deleteSP() {
+        //lấy sản phẩm trên form, xóa sản phẩm theo maSP
+        //xóa trắng form
+        int maSP = Integer.parseInt(txtMaTG.getText());
+        if (MsgBox.confirm(this, "Bạn thực sự muốn xóa sản phẩm này ?")) {
+            try {
+                tgdao.delete(maSP);
+                this.fillTable();
+                this.clearForm();
+                MsgBox.alert(this, "Xóa sản phẩm thành công !");
+            } catch (Exception e) {
+                MsgBox.alert(this, "Không thể xóa sản phẩm !");
+                return;
+            }
+        }
+    }
+
+    void clearForm() { //xóa trắng form
+        this.setForm(new TacGia());
+        lblAnh.setIcon(null);
+        this.row = -1;
+//        this.updateStatus();
+        txtMaTG.setBackground(Color.white);
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -194,9 +215,11 @@ public class QLTacGia extends javax.swing.JPanel {
         jLabel2 = new javax.swing.JLabel();
         txtQueQuan = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
-        lblHinh = new javax.swing.JLabel();
+        lblAnh = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        txtTim = new javax.swing.JTextField();
+        txtMaTG = new javax.swing.JTextField();
+        jLabel7 = new javax.swing.JLabel();
+        txtTimKiem = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
@@ -213,6 +236,7 @@ public class QLTacGia extends javax.swing.JPanel {
         jScrollPane2.setBackground(new java.awt.Color(255, 255, 255));
 
         tblTacGia.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        tblTacGia.setFont(new java.awt.Font("Segoe UI Semilight", 0, 14)); // NOI18N
         tblTacGia.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
@@ -255,39 +279,59 @@ public class QLTacGia extends javax.swing.JPanel {
 
         txtTen.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
         txtTen.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 0, 0)));
-        jPanel1.add(txtTen, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 60, 250, 30));
+        jPanel1.add(txtTen, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 140, 250, 30));
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Segoe UI Semilight", 1, 16)); // NOI18N
         jLabel1.setText("Tên tác giả");
-        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 40, 110, -1));
+        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 120, 110, -1));
 
         txtNamSinh.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
         txtNamSinh.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 0, 0)));
-        jPanel1.add(txtNamSinh, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 140, 250, 30));
+        jPanel1.add(txtNamSinh, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 220, 250, 30));
 
-        jLabel2.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Segoe UI Semilight", 1, 16)); // NOI18N
         jLabel2.setText("Năm sinh");
-        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 120, 110, -1));
+        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 200, 110, -1));
 
         txtQueQuan.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
         txtQueQuan.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 0, 0)));
-        jPanel1.add(txtQueQuan, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 230, 250, 30));
+        jPanel1.add(txtQueQuan, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 310, 250, 30));
 
-        jLabel3.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("Segoe UI Semilight", 1, 16)); // NOI18N
         jLabel3.setText("Quê quán");
-        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 210, 110, -1));
+        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 290, 110, -1));
 
-        lblHinh.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        jPanel1.add(lblHinh, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 40, 300, 330));
+        lblAnh.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        lblAnh.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lblAnhMouseClicked(evt);
+            }
+        });
+        jPanel1.add(lblAnh, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 40, 300, 330));
 
         jLabel4.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
         jLabel4.setText("Ảnh");
         jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 20, -1, -1));
 
+        txtMaTG.setEditable(false);
+        txtMaTG.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
+        txtMaTG.setText("0");
+        txtMaTG.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 0, 0)));
+        jPanel1.add(txtMaTG, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 60, 250, 30));
+
+        jLabel7.setFont(new java.awt.Font("Segoe UI Semilight", 1, 16)); // NOI18N
+        jLabel7.setText("Mã tác giả");
+        jPanel1.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 40, 110, -1));
+
         add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 170, 630, 400));
 
-        txtTim.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 0, 0)));
-        add(txtTim, new org.netbeans.lib.awtextra.AbsoluteConstraints(710, 150, 370, 30));
+        txtTimKiem.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 0, 0)));
+        txtTimKiem.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtTimKiemKeyReleased(evt);
+            }
+        });
+        add(txtTimKiem, new org.netbeans.lib.awtextra.AbsoluteConstraints(710, 150, 370, 30));
 
         jLabel5.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
         jLabel5.setText("Thông tin");
@@ -306,19 +350,34 @@ public class QLTacGia extends javax.swing.JPanel {
         jButton2.setBackground(new java.awt.Color(153, 102, 0));
         jButton2.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
         jButton2.setText("Xóa");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
         add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 600, 90, 30));
 
         jButton3.setBackground(new java.awt.Color(153, 102, 0));
         jButton3.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
         jButton3.setText("Mới");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
         add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 600, 90, 30));
 
         jButton4.setBackground(new java.awt.Color(153, 102, 0));
         jButton4.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
         jButton4.setText("Thêm");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
         add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 600, 90, 30));
 
-        jLabel6.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
+        jLabel6.setFont(new java.awt.Font("Segoe UI Semilight", 1, 16)); // NOI18N
         jLabel6.setText("Tìm kiếm");
         add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(710, 130, 230, -1));
 
@@ -338,12 +397,63 @@ public class QLTacGia extends javax.swing.JPanel {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
+        if(XValidate.checkNullText(txtTen)
+                &&XValidate.checkNullText(txtNamSinh)
+                &&XValidate.checkNullText(txtQueQuan)){
+            if(XValidate.checkName(txtTen)){
+                if(XValidate.checkYear(txtNamSinh)){
+                    updateSP();
+                }
+            }
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void tblTacGiaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblTacGiaMouseClicked
-        // TODO add your handling code here:
-        clickTable();
+        if (evt.getClickCount() == 2) {
+            this.row = tblTacGia.getSelectedRow();
+            this.edit();
+        }
     }//GEN-LAST:event_tblTacGiaMouseClicked
+
+    private void lblAnhMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblAnhMouseClicked
+        // TODO add your handling code here:
+        selectIcon();
+    }//GEN-LAST:event_lblAnhMouseClicked
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        // TODO add your handling code here:
+        if(XValidate.checkNullText(txtTen)
+                &&XValidate.checkNullText(txtNamSinh)
+                &&XValidate.checkNullText(txtQueQuan)){
+            if(XValidate.checkName(txtTen)){
+                if(XValidate.checkYear(txtNamSinh)){
+                    insert();
+                }
+            }
+        }
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        deleteSP();
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        // TODO add your handling code here:
+        clearForm();
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void txtTimKiemKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTimKiemKeyReleased
+        // TODO add your handling code here:
+        TableRowSorter<TableModel> rowSorter = new TableRowSorter<>(tblTacGia.getModel());
+        tblTacGia.setRowSorter(rowSorter);
+        
+        // Tạo RowFilter dựa trên nội dung tìm kiếm
+        RowFilter<Object, Object> rowFilter = RowFilter.regexFilter("(?i)" + txtTimKiem.getText());
+
+        // Đặt RowFilter cho RowSorter
+        rowSorter.setRowFilter(rowFilter);
+    }//GEN-LAST:event_txtTimKiemKeyReleased
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -357,17 +467,19 @@ public class QLTacGia extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JLabel lblAnh;
     private javax.swing.JLabel lblChucVu;
-    private javax.swing.JLabel lblHinh;
     private javax.swing.JLabel lblTacGia;
     private javax.swing.JLabel lblTen;
     private javax.swing.JTable tblTacGia;
+    private javax.swing.JTextField txtMaTG;
     private javax.swing.JTextField txtNamSinh;
     private javax.swing.JTextField txtQueQuan;
     private javax.swing.JTextField txtTen;
-    private javax.swing.JTextField txtTim;
+    private javax.swing.JTextField txtTimKiem;
     // End of variables declaration//GEN-END:variables
 }

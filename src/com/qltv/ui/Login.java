@@ -147,7 +147,7 @@ public class Login extends javax.swing.JFrame {
         panelSlide1.add(btnLogin, new org.netbeans.lib.awtextra.AbsoluteConstraints(720, 350, 130, 40));
 
         txtMatKhau.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
-        txtMatKhau.setText("123456");
+        txtMatKhau.setText("12345");
         txtMatKhau.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 0, 0)));
         panelSlide1.add(txtMatKhau, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 250, 310, 40));
 
@@ -206,7 +206,8 @@ public class Login extends javax.swing.JFrame {
     }//GEN-LAST:event_btnLoginActionPerformed
 
     private void lblQuenMKMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblQuenMKMouseClicked
-        
+    new QuenMatKhau1().setVisible(true);
+    this.hide();
     }//GEN-LAST:event_lblQuenMKMouseClicked
 
     private void lblQuenMKMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblQuenMKMouseExited

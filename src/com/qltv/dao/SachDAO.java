@@ -18,12 +18,13 @@ import java.util.List;
 public class SachDAO {
     
     public static ResultSet rs;
-    public static String INSERT_SQL = "insert into Sach (TenSach,MaLoai,MaNXB,MaTacGia,NamXB,SoLuong,MaKe,HinhAnh,GhiChu values (?,?,?,?,?,?,?,?,?)";
+    public static String INSERT_SQL = "insert into Sach (TenSach,MaLoai,MaNXB,MaTacGia,NamXB,SoLuong,MaKe,HinhAnh,GhiChu) values (?,?,?,?,?,?,?,?,?)";
     public static String UPDATE_SQL = "update Sach set TenSach = ?, MaLoai = ?, MaNXB = ?, MaTacGia = ?, NamXB = ?, SoLuong = ?, MaKe = ?, HinhAnh = ?, GhiChu = ? where MaSach = ?";
     public static String DELETE_SQL = "delete from Sach where MaSach = ?";
     public static String SELECT_BY_ID = "select * from Sach where MaSach = ?";
     public static String SELECT_BY_LOAI = "select TenLoai from Loai where MaLoai = ?";
     public static String SELECT_ALL_SQL = "select * from Sach ";
+    public static String CONVERT_TENLOAI = "select TenLoai from Loai where MaLoai = ?";
     
     public void insert(Sach entity){
         XJdbc.update(INSERT_SQL, 
@@ -37,6 +38,8 @@ public class SachDAO {
                         entity.getHinh(),
                         entity.getGhichu());
     }
+    
+
     
     public void update(Sach entity){
         XJdbc.update(UPDATE_SQL, 
@@ -56,31 +59,8 @@ public class SachDAO {
         XJdbc.update(DELETE_SQL, id);
     }
     
-    	public static int getsoluongsach(int masach) {
-		try {
-			int soluong = 0;
-			Connection conn = XJdbc.getConnection();
-			String sql = "select SoLuong from Sach where MaSach = ? ";
-			PreparedStatement pstm = conn.prepareStatement(sql);
-			pstm.setInt(1, masach);
-			ResultSet rs = pstm.executeQuery();
-			if (rs.next()) {
-				soluong = rs.getInt("SoLuong");
-			}
-			return soluong;
-		} catch (Exception e) {
-			return -1;
-		}
-
-	}
-    
     public List<Sach> selectAll(){
         return selectBySql(SELECT_ALL_SQL);
-    }
-    
-    public List<String> selectById() {
-        String SELECT_ID = "select TenNXB from NhaXuatBan";
-        return selectByName( SELECT_ID);
     }
     
     protected ArrayList<String> selectByName(String sql, Object... args) {
@@ -102,7 +82,7 @@ public class SachDAO {
         return list;
     }
     
-    public Sach selectById(String key) {
+    public Sach selectByIds(int key) {
         List<Sach> list = selectBySql(SELECT_BY_ID, key);
         return list.size() > 0 ? list.get(0) : null;
     }
@@ -113,19 +93,19 @@ public class SachDAO {
         ArrayList<Sach> list = new ArrayList<>();
         try {
             try {
-                rs = XJdbc.query(sql);
+                rs = XJdbc.query(sql,args);
                 while (rs.next()) {
                     Sach s = new Sach();
-                    s.setMa(rs.getString(1));
+                    s.setMa(rs.getInt(1));
                     s.setTen(rs.getString(2));
-                    s.setMaLoai(rs.getString(3));
-                    s.setMaNXB(rs.getString(4));
-                    s.setMaTG(rs.getString(5));
+                    s.setMaLoai(rs.getInt(3));
+                    s.setMaNXB(rs.getInt(4));
+                    s.setMaTG(rs.getInt(5));
                     s.setNam(rs.getInt(6));
                     s.setSoluong(rs.getInt(7));
-                    s.setMaKe(rs.getString(8));
-//                    s.setHinh(rs.getString(9));
-                    s.setGhichu(rs.getString(9));
+                    s.setMaKe(rs.getInt(8));
+                    s.setHinh(rs.getString("HinhAnh"));
+                    s.setGhichu(rs.getString(10));
                 list.add(s);
                 }
             } finally {
@@ -137,6 +117,11 @@ public class SachDAO {
         }
         return list;
     }
+    
+//    public List<SanPham> selectByKeyword(String keyword){ //tìm kiếm sản phẩm theo từ khóa
+//        String sql = "SELECT * FROM Sach WHERE TenSach LIKE ? or ";
+//        return this.selectBySql(sql, "%" + keyword + "%");
+//    }
     
     
 }

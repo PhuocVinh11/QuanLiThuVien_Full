@@ -9,15 +9,21 @@ import com.qltv.dao.DocGiaDAO;
 import com.qltv.dao.TheThuVienDAO;
 import com.qltv.entity.DocGia;
 import com.qltv.entity.TheThuVien;
+import com.qltv.utils.Auth;
 import com.qltv.utils.MsgBox;
 import com.qltv.utils.XDate;
+import com.qltv.utils.XValidate;
+import java.awt.Color;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
+import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 
 /**
  *
@@ -29,13 +35,19 @@ public class QLDocGia extends javax.swing.JPanel {
             DocGia dg = new DocGia();
     TheThuVienDAO ttvdao = new TheThuVienDAO();
     int row = -1;
-
     /**
      * Creates new form Form_1
      */
     public QLDocGia() {
         initComponents();
         this.fillTableDG();
+         try{
+            lblTen.setText("Tên đăng nhập: " + Auth.user.getUser());
+        lblChucVu.setText("Chức vụ: " + String.valueOf(Auth.user.isQuyen() ? "Quản lý" : "Nhân viên"));
+        }catch(Exception e){
+            MsgBox.alert(this, "Bạn phải đăng nhập trước khi sử dụng!");
+        }
+        dateNgayBD.setDate(XDate.now());
     }
 
     // Form ĐỘC GIẢ
@@ -44,7 +56,8 @@ public class QLDocGia extends javax.swing.JPanel {
         DefaultTableModel model = (DefaultTableModel) tblDSDocGia.getModel();
         model.setRowCount(0);
         try {
-            List<DocGia> list = dgdao.selectAll();
+            List<DocGia> list 
+                    = dgdao.selectAll();
             for (DocGia dg : list) {
                 Object[] row = {
                     dg.getMaDG(),
@@ -60,49 +73,12 @@ public class QLDocGia extends javax.swing.JPanel {
             e.printStackTrace();
         }
     }
-        
-
-
-    
-
-    private void clickTableDocGia() {
-        int i = tblDSDocGia.getSelectedRow();
-        if (i > -1) {
-            try {
-                txtTenDG2.setText(tblDSDocGia.getValueAt(i, 1) + "");
-                txtSoDT.setText(tblDSDocGia.getValueAt(i, 4) + "");
-                txtDiaChi.setText(tblDSDocGia.getValueAt(i, 3) + "");
-                if (String.valueOf(tblDSDocGia.getValueAt(i, 2)) == "Nam") {
-                    rdoNam.setSelected(true);
-                } else if (String.valueOf(tblDSDocGia.getValueAt(i, 2)).equals("Nữ")) {
-                    rdoNu.isSelected();
-                }
-                txtMaDG.setText(tblDSDocGia.getValueAt(i, 0)+"");
-                
-                if(String.valueOf(tblDSDocGia.getValueAt(i, 0)).equals(String.valueOf(tblDSTheTV.getValueAt(0, 4)))){
-                dateNgayKT.setDate(XDate.toDate(tblDSTheTV.getValueAt(0, 2).toString(), "dd-MM-yyyy"));
-                dateNgayBD.setDate(XDate.toDate(tblDSTheTV.getValueAt(0, 1).toString(), "dd-MM-yyyy"));
-                jTextArea2.setText(tblDSTheTV.getValueAt(0, 3) + "");
-                }
-            } catch (Exception e) {
-
-            }
-            jTabbedPane1.setSelectedIndex(0);
-        } else {
-            JOptionPane.showMessageDialog(null, "Bạn chưa chọnvào bảng");
-        }
-
-    }
     
     private void insertDG() {
-//        if (checkfrominsert1()) {
-//            if(checkformInsert()){
         dg = this.getFormDG();
         dgdao.insert(dg);
         this.fillTableDG();
         MsgBox.alert(this, "Thêm thành công");
-//        }
-//        }
     }
 
     private void updateDG() {
@@ -119,12 +95,9 @@ public class QLDocGia extends javax.swing.JPanel {
     }
 
     void clearformDG() {
-        txtMaDG.setText("");
-        txtTenDG2.setText("");
-        txtSoDT.setText("");
-        txtDiaChi.setText("");
-        rdoNam.setSelected(false);
-        rdoNu.setSelected(false);
+        this.setFormDG(new DocGia());
+        this.row = -1;
+        txtMaDG.setBackground(Color.white);
     }
 
     private void deleteDG() {
@@ -138,14 +111,53 @@ public class QLDocGia extends javax.swing.JPanel {
         MsgBox.alert(this, "Xóa thành công");
     }
 
+    void editDG() {//điền thông tin đt sản phẩm lên form (theo vị trí row)
+        try {
+            int masp = (int) tblDSDocGia.getValueAt(this.row, 0);
+            DocGia model = dgdao.selectByIds(masp);
+            if (model != null) {
+                this.setFormDG(model);
+//                this.updateStatus();
+                tabs.setSelectedIndex(0);
+            }
+        } catch (Exception e) {
+            MsgBox.alert(this, "Lỗi click");
+        }
+        rdoNam.setSelected(true);
+        
+    }
+    
+    private void setFormDG(DocGia cd) {
+        txtTenDG2.setText(cd.getTenDG());
+        txtSoDT.setText(cd.getSoDT());
+        txtDiaChi.setText(cd.getDiaChi());
+        if(cd.isGioiTinh() == true){
+            rdoNam.setSelected(true);
+        }else if(cd.isGioiTinh() == false){
+            rdoNu.setSelected(true);
+        }
+        txtMaDG.setText(cd.getMaDG()+"");
+    }
+    
     private DocGia getFormDG() {
-        dg.setTenDG(txtDiaChi.getText());
-        dg.setGioiTinh(rdoNam.isSelected());
+        dg.setMaDG(Integer.parseInt(txtMaDG.getText()));
+        dg.setTenDG(txtTenDG2.getText());
         dg.setDiaChi(txtDiaChi.getText());
         dg.setSoDT(txtSoDT.getText());
+        boolean giotinh = true;
+        if (rdoNam.isSelected()) {
+            giotinh = true;
+        }else{
+            giotinh=false;
+        }
+        dg.setGioiTinh(giotinh);
         return dg;
     }
     
+    
+    /*
+    -------------THẺ THƯ VIỆN-----------
+    */
         private void fillTableTTV() {
         DefaultTableModel model = (DefaultTableModel) tblDSTheTV.getModel();
         model.setRowCount(0);
@@ -190,24 +202,6 @@ public class QLDocGia extends javax.swing.JPanel {
 
     }
 
-    private void clickTableTheThuVien() {
-        int i = tblDSTheTV.getSelectedRow();
-        if (i > -1) {
-            try {
-                txtMaDG.setText(tblDSTheTV.getValueAt(i, 4) + "");
-                dateNgayKT.setDate(XDate.toDate(tblDSTheTV.getValueAt(i, 2).toString(), "dd-MM-yyyy"));
-                dateNgayBD.setDate(XDate.toDate(tblDSTheTV.getValueAt(i, 1).toString(), "dd-MM-yyyy"));
-                jTextArea2.setText(tblDSTheTV.getValueAt(i, 3) + "");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            jTabbedPane1.setSelectedIndex(0);
-        } else {
-            JOptionPane.showMessageDialog(null, "Bạn chưa chọnvào bảng");
-        }
-
-    }
-
     private void insertTTV() {
 //        if (checkfrominsert1()) {
 //            if(checkformInsert()){
@@ -223,7 +217,7 @@ public class QLDocGia extends javax.swing.JPanel {
     private void updateTTV() {
 //        if(checkfrominsert1()){
 //         if(checkMSP()){
-        TheThuVien ttv = this.getFormTTV();
+        TheThuVien ttv = this.getForm();
         System.out.println(ttv.toString());
         ttvdao.update(ttv);
         this.fillTableTTV();
@@ -234,11 +228,40 @@ public class QLDocGia extends javax.swing.JPanel {
     }
 
     private void clearForm() {
-        this.setForm(new TheThuVien());
+        this.setFormTTV(new TheThuVien());
         this.row = -1;
     }
     
+    void editTTV() {//điền thông tin đt sản phẩm lên form (theo vị trí row)
+        try {
+            int masp = (int) tblDSTheTV.getValueAt(this.row, 0);
+            TheThuVien model = ttvdao.selectByIdTTV(masp);
+            if (model != null) {
+                this.setForm(model);
+//                this.updateStatus();
+                tabs.setSelectedIndex(0);
+            }
+            int ma = (int) tblDSTheTV.getValueAt(this.row, 4);
+            DocGia modelDG = dgdao.selectByIds(ma);
+            if (model != null) {
+                this.setFormDG(modelDG);
+//                this.updateStatus();
+                tabs.setSelectedIndex(0);
+            }
+        } catch (Exception e) {
+            MsgBox.alert(this, "Lỗi click");
+            e.printStackTrace();
+        }
+    }
+    
     private void setForm(TheThuVien cd) {
+        txtMaDG.setText(cd.getMadocgia()+"");
+        dateNgayBD.setDate(cd.getNgayBatDau());
+        dateNgayKT.setDate(cd.getNgayKetThuc());
+        jTextArea2.setText(cd.getGhiChu());
+    }
+    
+    private void setFormTTV(TheThuVien cd) {
         dateNgayBD.setDate(cd.getNgayBatDau());
         dateNgayKT.setDate(cd.getNgayKetThuc());
         jTextArea2.setText(cd.getGhiChu());
@@ -253,6 +276,16 @@ public class QLDocGia extends javax.swing.JPanel {
         MsgBox.alert(this, "Xóa thành công");
     }
 
+    private TheThuVien getForm() {
+        TheThuVien ttv = new TheThuVien();
+        ttv.setMaTheThuVien((int) tblDSTheTV.getValueAt(tblDSTheTV.getSelectedRow(), 0));
+        ttv.setNgayBatDau(dateNgayBD.getDate());
+        ttv.setNgayKetThuc(dateNgayKT.getDate());
+        ttv.setGhiChu(jTextArea2.getText());
+        ttv.setMadocgia(Integer.parseInt(txtMaDG.getText()));
+        return ttv;
+    }
+    
     private TheThuVien getFormTTV() {
         TheThuVien ttv = new TheThuVien();
         ttv.setNgayBatDau(dateNgayBD.getDate());
@@ -272,7 +305,7 @@ public class QLDocGia extends javax.swing.JPanel {
 
         btgGioiTinh = new javax.swing.ButtonGroup();
         jPanel1 = new javax.swing.JPanel();
-        jTabbedPane1 = new javax.swing.JTabbedPane();
+        tabs = new javax.swing.JTabbedPane();
         jPanel2 = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
         dateNgayKT = new com.toedter.calendar.JDateChooser();
@@ -312,15 +345,18 @@ public class QLDocGia extends javax.swing.JPanel {
         tblDSTheTV = new javax.swing.JTable();
         jLabel10 = new javax.swing.JLabel();
         txtTimKiem = new javax.swing.JTextField();
+        jPanel3 = new javax.swing.JPanel();
+        lblChucVu = new javax.swing.JLabel();
+        lblTen = new javax.swing.JLabel();
 
         setPreferredSize(new java.awt.Dimension(1100, 650));
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setPreferredSize(new java.awt.Dimension(1100, 650));
 
-        jTabbedPane1.setBackground(new java.awt.Color(255, 255, 255));
-        jTabbedPane1.setForeground(new java.awt.Color(153, 102, 0));
-        jTabbedPane1.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
+        tabs.setBackground(new java.awt.Color(255, 255, 255));
+        tabs.setForeground(new java.awt.Color(153, 102, 0));
+        tabs.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -351,9 +387,10 @@ public class QLDocGia extends javax.swing.JPanel {
         jPanel4.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 40, 70, -1));
 
         txtMaDG.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
+        txtMaDG.setText("0");
         txtMaDG.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 0, 0)));
         txtMaDG.setEnabled(false);
-        jPanel4.add(txtMaDG, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 60, 320, 40));
+        jPanel4.add(txtMaDG, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 60, 310, 40));
 
         jLabel9.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
         jLabel9.setText("Mã độc giả");
@@ -418,16 +455,16 @@ public class QLDocGia extends javax.swing.JPanel {
         btgGioiTinh.add(rdoNam);
         rdoNam.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
         rdoNam.setText("Nam");
-        jPanel10.add(rdoNam, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 180, 60, -1));
+        jPanel10.add(rdoNam, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 160, 60, -1));
 
         btgGioiTinh.add(rdoNu);
         rdoNu.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
         rdoNu.setText("Nữ");
-        jPanel10.add(rdoNu, new org.netbeans.lib.awtextra.AbsoluteConstraints(590, 180, -1, -1));
+        jPanel10.add(rdoNu, new org.netbeans.lib.awtextra.AbsoluteConstraints(590, 160, -1, -1));
 
         jLabel6.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
         jLabel6.setText("Giới tính");
-        jPanel10.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(475, 153, 70, -1));
+        jPanel10.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 130, 70, -1));
 
         jLabel2.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
         jLabel2.setText("Tên độc giả");
@@ -435,7 +472,7 @@ public class QLDocGia extends javax.swing.JPanel {
 
         jLabel7.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
         jLabel7.setText("Địa chỉ");
-        jPanel10.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 140, -1, -1));
+        jPanel10.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 120, -1, -1));
 
         jLabel8.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
         jLabel8.setText("Số điện thoại");
@@ -443,7 +480,7 @@ public class QLDocGia extends javax.swing.JPanel {
 
         txtDiaChi.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
         txtDiaChi.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 0, 0)));
-        jPanel10.add(txtDiaChi, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 160, 320, 40));
+        jPanel10.add(txtDiaChi, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 140, 320, 40));
 
         txtSoDT.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
         txtSoDT.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 0, 0)));
@@ -461,7 +498,7 @@ public class QLDocGia extends javax.swing.JPanel {
                 btnSuaDGActionPerformed(evt);
             }
         });
-        jPanel10.add(btnSuaDG, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 90, -1, -1));
+        jPanel10.add(btnSuaDG, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 80, -1, -1));
 
         btnXoaDG.setBackground(new java.awt.Color(204, 153, 0));
         btnXoaDG.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
@@ -471,7 +508,7 @@ public class QLDocGia extends javax.swing.JPanel {
                 btnXoaDGActionPerformed(evt);
             }
         });
-        jPanel10.add(btnXoaDG, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 140, -1, -1));
+        jPanel10.add(btnXoaDG, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 130, -1, -1));
 
         btnMoiDG.setBackground(new java.awt.Color(204, 153, 0));
         btnMoiDG.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
@@ -481,7 +518,7 @@ public class QLDocGia extends javax.swing.JPanel {
                 btnMoiDGActionPerformed(evt);
             }
         });
-        jPanel10.add(btnMoiDG, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 190, -1, -1));
+        jPanel10.add(btnMoiDG, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 180, -1, -1));
 
         btnThemDG.setBackground(new java.awt.Color(204, 153, 0));
         btnThemDG.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
@@ -491,36 +528,37 @@ public class QLDocGia extends javax.swing.JPanel {
                 btnThemDGActionPerformed(evt);
             }
         });
-        jPanel10.add(btnThemDG, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 40, -1, -1));
+        jPanel10.add(btnThemDG, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 30, -1, -1));
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(68, 68, 68)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel5)
-                        .addGap(416, 416, 416))
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 941, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, 941, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(68, 68, 68)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 941, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, 941, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(445, 445, 445)
+                        .addComponent(jLabel5)))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(15, 15, 15)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel5)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, 252, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 254, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, 231, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 236, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(53, 53, 53))
         );
 
-        jTabbedPane1.addTab("ĐỘC GIẢ", jPanel2);
+        tabs.addTab("ĐỘC GIẢ", jPanel2);
 
         jPanel5.setBackground(new java.awt.Color(255, 255, 255));
         jPanel5.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -557,9 +595,9 @@ public class QLDocGia extends javax.swing.JPanel {
         });
         jScrollPane2.setViewportView(tblDSDocGia);
 
-        jPanel6.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 30, 900, 177));
+        jPanel6.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 30, 900, 160));
 
-        jPanel5.add(jPanel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 90, 960, 230));
+        jPanel5.add(jPanel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 90, 960, 210));
 
         jPanel7.setBackground(new java.awt.Color(255, 255, 255));
         jPanel7.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Danh sách độc giả", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI Semilight", 0, 16), new java.awt.Color(153, 102, 0))); // NOI18N
@@ -593,9 +631,9 @@ public class QLDocGia extends javax.swing.JPanel {
         });
         jScrollPane3.setViewportView(tblDSTheTV);
 
-        jPanel7.add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 30, 900, 177));
+        jPanel7.add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 30, 900, 160));
 
-        jPanel5.add(jPanel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 340, 960, 237));
+        jPanel5.add(jPanel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 320, 960, 210));
 
         jLabel10.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
         jLabel10.setText("Tìm kiếm");
@@ -603,19 +641,39 @@ public class QLDocGia extends javax.swing.JPanel {
 
         txtTimKiem.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
         txtTimKiem.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 0, 0)));
+        txtTimKiem.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtTimKiemKeyReleased(evt);
+            }
+        });
         jPanel5.add(txtTimKiem, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 40, 320, 40));
 
-        jTabbedPane1.addTab("DANH SÁCH", jPanel5);
+        tabs.addTab("DANH SÁCH", jPanel5);
+
+        jPanel3.setBackground(new java.awt.Color(153, 102, 0));
+        jPanel3.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        lblChucVu.setFont(new java.awt.Font("Segoe UI Semilight", 0, 18)); // NOI18N
+        lblChucVu.setText("Chức vụ: ");
+        jPanel3.add(lblChucVu, new org.netbeans.lib.awtextra.AbsoluteConstraints(860, 20, -1, -1));
+
+        lblTen.setFont(new java.awt.Font("Segoe UI Semilight", 0, 18)); // NOI18N
+        lblTen.setText("Tên đăng nhập:");
+        jPanel3.add(lblTen, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 20, -1, -1));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1100, Short.MAX_VALUE)
+            .addComponent(tabs, javax.swing.GroupLayout.DEFAULT_SIZE, 1100, Short.MAX_VALUE)
+            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 650, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(tabs, javax.swing.GroupLayout.PREFERRED_SIZE, 584, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -637,7 +695,8 @@ public class QLDocGia extends javax.swing.JPanel {
     private void tblDSDocGiaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblDSDocGiaMouseClicked
         // TODO add your handling code here:
         if (evt.getClickCount() == 2) {
-            clickTableDocGia();
+            this.row = tblDSDocGia.getSelectedRow();
+            editDG();
         }
         getTableTheThuVien();
     }//GEN-LAST:event_tblDSDocGiaMouseClicked
@@ -645,7 +704,8 @@ public class QLDocGia extends javax.swing.JPanel {
     private void tblDSTheTVMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblDSTheTVMouseClicked
         // TODO add your handling code here:
         if (evt.getClickCount() == 2) {
-            clickTableTheThuVien();
+            this.row = tblDSTheTV.getSelectedRow();
+            editTTV();
         }
     }//GEN-LAST:event_tblDSTheTVMouseClicked
 
@@ -654,15 +714,28 @@ public class QLDocGia extends javax.swing.JPanel {
     }//GEN-LAST:event_btnMoiDGActionPerformed
 
     private void btnThemDGActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThemDGActionPerformed
-        insertDG();
+        if(XValidate.checkNullText(txtMaDG)
+                &&XValidate.checkNullText(txtTenDG2)
+                &&XValidate.checkNullText(txtDiaChi)
+                &&XValidate.checkNullText(txtSoDT)){
+            if(XValidate.checkName(txtTenDG2)){
+                if(XValidate.checkSDT(txtSoDT)){
+                    insertDG();
+                }
+            }
+        }
     }//GEN-LAST:event_btnThemDGActionPerformed
 
     private void btnThemTTVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThemTTVActionPerformed
-        insertTTV();
+        if(XValidate.checkNullText(txtMaDG)){
+                    insertTTV();
+        }
     }//GEN-LAST:event_btnThemTTVActionPerformed
 
     private void btnSuaTTVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSuaTTVActionPerformed
-        updateTTV();
+        if(XValidate.checkNullText(txtMaDG)){
+                    updateTTV();
+                        }
     }//GEN-LAST:event_btnSuaTTVActionPerformed
 
     private void btnXoaTTVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXoaTTVActionPerformed
@@ -674,12 +747,32 @@ public class QLDocGia extends javax.swing.JPanel {
     }//GEN-LAST:event_btnMoiTTVActionPerformed
 
     private void btnSuaDGActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSuaDGActionPerformed
-        updateDG();
+        if(XValidate.checkNullText(txtTenDG2)
+                &&XValidate.checkNullText(txtDiaChi)
+                &&XValidate.checkNullText(txtSoDT)){
+            if(XValidate.checkName(txtTenDG2)){
+                if(XValidate.checkSDT(txtSoDT)){
+                    updateDG();
+                }
+            }
+        }
     }//GEN-LAST:event_btnSuaDGActionPerformed
 
     private void btnXoaDGActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXoaDGActionPerformed
         deleteDG();
     }//GEN-LAST:event_btnXoaDGActionPerformed
+
+    private void txtTimKiemKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTimKiemKeyReleased
+        // TODO add your handling code here:
+        TableRowSorter<TableModel> rowSorter = new TableRowSorter<>(tblDSDocGia.getModel());
+        tblDSDocGia.setRowSorter(rowSorter);
+        
+        // Tạo RowFilter dựa trên nội dung tìm kiếm
+        RowFilter<Object, Object> rowFilter = RowFilter.regexFilter("(?i)" + txtTimKiem.getText());
+
+        // Đặt RowFilter cho RowSorter
+        rowSorter.setRowFilter(rowFilter);
+    }//GEN-LAST:event_txtTimKiemKeyReleased
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -707,6 +800,7 @@ public class QLDocGia extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
@@ -714,10 +808,12 @@ public class QLDocGia extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTextArea jTextArea2;
+    private javax.swing.JLabel lblChucVu;
+    private javax.swing.JLabel lblTen;
     private javax.swing.JRadioButton rdoNam;
     private javax.swing.JRadioButton rdoNu;
+    private javax.swing.JTabbedPane tabs;
     private javax.swing.JTable tblDSDocGia;
     private javax.swing.JTable tblDSTheTV;
     private javax.swing.JTextField txtDiaChi;

@@ -364,11 +364,21 @@ public class QLChung extends javax.swing.JPanel {
         jButton1.setBackground(new java.awt.Color(204, 153, 0));
         jButton1.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
         jButton1.setText("Sửa");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
         pnlLoaiSach.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 210, -1, -1));
 
         jButton2.setBackground(new java.awt.Color(204, 153, 0));
         jButton2.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
         jButton2.setText("Xóa");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
         pnlLoaiSach.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 210, -1, -1));
 
         jButton3.setBackground(new java.awt.Color(204, 153, 0));
@@ -384,6 +394,11 @@ public class QLChung extends javax.swing.JPanel {
         jButton4.setBackground(new java.awt.Color(204, 153, 0));
         jButton4.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
         jButton4.setText("Thêm");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
         pnlLoaiSach.add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 210, -1, -1));
 
         tabs.addTab(" LOẠI SÁCH", pnlLoaiSach);
@@ -434,21 +449,41 @@ public class QLChung extends javax.swing.JPanel {
         jButton13.setBackground(new java.awt.Color(204, 153, 0));
         jButton13.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
         jButton13.setText("Sửa");
+        jButton13.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton13ActionPerformed(evt);
+            }
+        });
         pnlKeSach.add(jButton13, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 210, -1, -1));
 
         jButton14.setBackground(new java.awt.Color(204, 153, 0));
         jButton14.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
         jButton14.setText("Xóa");
+        jButton14.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton14ActionPerformed(evt);
+            }
+        });
         pnlKeSach.add(jButton14, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 210, -1, -1));
 
         jButton15.setBackground(new java.awt.Color(204, 153, 0));
         jButton15.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
         jButton15.setText("Mới");
+        jButton15.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton15ActionPerformed(evt);
+            }
+        });
         pnlKeSach.add(jButton15, new org.netbeans.lib.awtextra.AbsoluteConstraints(660, 210, -1, -1));
 
         jButton16.setBackground(new java.awt.Color(204, 153, 0));
         jButton16.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
         jButton16.setText("Thêm");
+        jButton16.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton16ActionPerformed(evt);
+            }
+        });
         pnlKeSach.add(jButton16, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 210, -1, -1));
 
         tabs.addTab("KỆ SÁCH", pnlKeSach);
@@ -499,21 +534,41 @@ public class QLChung extends javax.swing.JPanel {
         jButton17.setBackground(new java.awt.Color(204, 153, 0));
         jButton17.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
         jButton17.setText("Sửa");
+        jButton17.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton17ActionPerformed(evt);
+            }
+        });
         pnlNCC.add(jButton17, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 210, -1, -1));
 
         jButton18.setBackground(new java.awt.Color(204, 153, 0));
         jButton18.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
         jButton18.setText("Xóa");
+        jButton18.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton18ActionPerformed(evt);
+            }
+        });
         pnlNCC.add(jButton18, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 210, -1, -1));
 
         jButton19.setBackground(new java.awt.Color(204, 153, 0));
         jButton19.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
         jButton19.setText("Mới");
+        jButton19.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton19ActionPerformed(evt);
+            }
+        });
         pnlNCC.add(jButton19, new org.netbeans.lib.awtextra.AbsoluteConstraints(660, 210, -1, -1));
 
         jButton20.setBackground(new java.awt.Color(204, 153, 0));
         jButton20.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
         jButton20.setText("Thêm");
+        jButton20.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton20ActionPerformed(evt);
+            }
+        });
         pnlNCC.add(jButton20, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 210, -1, -1));
 
         tabs.addTab("NHÀ CUNG CẤP", pnlNCC);
@@ -547,14 +602,14 @@ public class QLChung extends javax.swing.JPanel {
 
     private void tblNCCMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblNCCMouseClicked
         // TODO add your handling code here:
-        if(evt.getClickCount() == 1){
+        if(evt.getClickCount() == 2){
             clickTableNCC();
         }
     }//GEN-LAST:event_tblNCCMouseClicked
 
     private void tblKeSachMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblKeSachMouseClicked
         // TODO add your handling code here:
-        if(evt.getClickCount() == 1){
+        if(evt.getClickCount() == 2){
             clickTableKeSach();
         }
     }//GEN-LAST:event_tblKeSachMouseClicked
@@ -568,7 +623,75 @@ public class QLChung extends javax.swing.JPanel {
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
+        if(XValidate.checkNullText(txtLoai)){
+            insertLS();
+        }
     }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        // TODO add your handling code here:
+        if(XValidate.checkNullText(txtLoai)){
+            updateLS();
+        }
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        deleteLS();
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        clearFormLS();
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton16ActionPerformed
+        // TODO add your handling code here:
+        if(XValidate.checkNullText(txtKeSach)){
+            insertKS();
+        }
+    }//GEN-LAST:event_jButton16ActionPerformed
+
+    private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
+        // TODO add your handling code here:
+        if(XValidate.checkNullText(txtKeSach)){
+            updateKS();
+        }
+    }//GEN-LAST:event_jButton13ActionPerformed
+
+    private void jButton14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton14ActionPerformed
+        // TODO add your handling code here:
+        deleteKS();
+    }//GEN-LAST:event_jButton14ActionPerformed
+
+    private void jButton15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton15ActionPerformed
+        // TODO add your handling code here:
+        clearFormKS();
+    }//GEN-LAST:event_jButton15ActionPerformed
+
+    private void jButton20ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton20ActionPerformed
+        // TODO add your handling code here:
+        if(XValidate.checkNullText(txtTenNCC)){
+            insertNCC();
+        }
+    }//GEN-LAST:event_jButton20ActionPerformed
+
+    private void jButton17ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton17ActionPerformed
+        // TODO add your handling code here:
+        if(XValidate.checkNullText(txtTenNCC)){
+            updateNCC();
+        }
+    }//GEN-LAST:event_jButton17ActionPerformed
+
+    private void jButton18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton18ActionPerformed
+        // TODO add your handling code here:
+        deleteNCC();
+    }//GEN-LAST:event_jButton18ActionPerformed
+
+    private void jButton19ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton19ActionPerformed
+        // TODO add your handling code here:
+        clearFormNCC();
+    }//GEN-LAST:event_jButton19ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

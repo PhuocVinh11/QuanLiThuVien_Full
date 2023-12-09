@@ -117,9 +117,33 @@ public class LoaiSachDAO {
     }
     
     
-    
-//    public ArrayList<LoaiSach> selectByLoaiSach() {
-//        String sql= "Select * from Loai";
-//        return this.selectBySql(sql);
-//    }
+public String convertToTenLoai(int maLoai) {
+    String tenLoai = "";
+    try {
+        String sql = "SELECT TenLoai FROM Loai WHERE MaLoai = ?";
+        try (ResultSet resultSet = XJdbc.query(sql, maLoai)) {
+            if (resultSet.next()) {
+                tenLoai = resultSet.getString("TenLoai");
+            }
+        }
+    } catch (SQLException ex) {
+        ex.printStackTrace();
+    }
+    return tenLoai;
+}
+
+public int convertToMaLoai(String tenKS) {
+    int maKS = 0;
+    try {
+        String sql = "SELECT MaLoai FROM Loai WHERE TenLoai like ?";
+        try (ResultSet resultSet = XJdbc.query(sql, tenKS)) {
+            if (resultSet.next()) {
+                maKS = resultSet.getInt("MaLoai");
+            }
+        }
+    } catch (SQLException ex) {
+        ex.printStackTrace();
+    }
+    return maKS;
+}
 }

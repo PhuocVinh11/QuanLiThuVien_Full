@@ -18,9 +18,11 @@ public class TaiKhoanDAO {
     
     public static String INSERT_SQL = "insert into TaiKhoan (Username ,Password , Quyen, MaNV) values (?,?,?,?)";
     public static String UPDATE_SQL = "update TaiKhoan set Username = ?, Password = ?, Quyen = ?, MaNV = ? where MaTK = ? ";
-    public static String DELETE_SQL = "delete from TaiKhoan where MaTK = ?";
+    public static String DELETE_SQL = "delete from TaiKhoan inner join NhanVien on TaiKhoan.MaNV = NhanVien.MaNV where NhanVien.MaNV = ?";
+    public static String DELETE_ID_SQL = "delete from TaiKhoan where MaTK = ?";
     public static String SELECT_ALL = "select * from TaiKhoan";
     public static String SELECT_BY_ID = "select * from TaiKhoan where Username = ?";
+    public static String SELECT_BY_ID_TK = "select * from TaiKhoan where MaTK = ?";
     
     public void insert(TaiKhoan entity) {
         XJdbc.update(INSERT_SQL,
@@ -43,12 +45,24 @@ public class TaiKhoanDAO {
         XJdbc.update(DELETE_SQL, key);
     }
     
+    public void deleteTK(int key) {
+        XJdbc.update(DELETE_ID_SQL, key);
+    }
+    
     public ArrayList<TaiKhoan> SelectAll(){
         return SelectById(SELECT_ALL);
     }
     
     public TaiKhoan selectByIds(String id) {
         List<TaiKhoan> list = this.SelectById(SELECT_BY_ID, id);
+        if (list.isEmpty()) {
+            return null;
+        }
+        return list.get(0);
+    }
+    
+    public TaiKhoan selectByIdTK(int id) {
+        List<TaiKhoan> list = this.SelectById(SELECT_BY_ID_TK, id);
         if (list.isEmpty()) {
             return null;
         }
@@ -78,5 +92,12 @@ public class TaiKhoanDAO {
 //            throw new RuntimeException(ex);
         }
         return list;
+    }
+    
+    public void qmk(TaiKhoan model) {
+        String sql="UPDATE TaiKhoan SET Passwword=? WHERE Username=?";
+        XJdbc.update(sql, 
+        model.getPass(), 
+        model.getUser());  
     }
 }

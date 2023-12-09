@@ -40,12 +40,12 @@ public class XImage {
         }
     }
 
-    /*
-     * Đọc hình ảnh logo chuyên đề
-     */
+//    /*
+//     * Đọc hình ảnh logo chuyên đề
+//     */
     public static ImageIcon readIconCD(String fileName) {
         File path = new File("logos", fileName);
-        return new ImageIcon(new ImageIcon(path.getAbsolutePath()).getImage().getScaledInstance(220, 280, Image.SCALE_DEFAULT));
+        return new ImageIcon(new ImageIcon(path.getAbsolutePath()).getImage().getScaledInstance(440, 360, Image.SCALE_DEFAULT));
     }
     
     /*
@@ -70,6 +70,46 @@ public class XImage {
      */
     public static ImageIcon readIconNH(String fileName) {
         File path = new File("logos/avatars", fileName);
-        return new ImageIcon(new ImageIcon(path.getAbsolutePath()).getImage().getScaledInstance(210, 210, Image.SCALE_DEFAULT));
+        return new ImageIcon(new ImageIcon(path.getAbsolutePath()).getImage().getScaledInstance(440, 360, Image.SCALE_DEFAULT));
+    }
+    
+    
+    
+    public static void saveIconTG(File src) {
+        File dst = new File("logos/tacgia", src.getName());
+        if (!dst.getParentFile().exists()) {
+            dst.getParentFile().mkdirs();
+        }
+        try {
+            Path from = Paths.get(src.getAbsolutePath());
+            Path to = Paths.get(dst.getAbsolutePath());
+            Files.copy(from, to, StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    public static ImageIcon readIconTG(String fileName) {
+        File path = new File("logos/tacgia", fileName);
+        return new ImageIcon(new ImageIcon(path.getAbsolutePath()).getImage().getScaledInstance(300, 330, Image.SCALE_DEFAULT));
+    }
+    
+    public static void saveIconNXB(File src) {
+        File dst = new File("logos/nxb", src.getName());
+        if (!dst.getParentFile().exists()) {
+            dst.getParentFile().mkdirs();
+        }
+        try {
+            Path from = Paths.get(src.getAbsolutePath());
+            Path to = Paths.get(dst.getAbsolutePath());
+            Files.copy(from, to, StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    public static ImageIcon readIconNXB(String fileName) {
+        File path = new File("logos/nxb", fileName);
+        return new ImageIcon(new ImageIcon(path.getAbsolutePath()).getImage().getScaledInstance(220, 310, Image.SCALE_DEFAULT));
     }
 }

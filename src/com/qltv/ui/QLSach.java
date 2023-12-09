@@ -11,6 +11,8 @@ import com.qltv.utils.Auth;
 import com.qltv.utils.MsgBox;
 import com.qltv.utils.XDate;
 import com.qltv.utils.XImage;
+import com.qltv.utils.XValidate;
+import java.awt.Color;
 import java.io.File;
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
@@ -18,9 +20,12 @@ import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.RowFilter;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 
 /**
  *
@@ -48,6 +53,13 @@ public class QLSach extends javax.swing.JPanel {
         this.fillComboBoxKeSach();
         this.fillComboBoxNXB();
         this.fillComboBoxTacGia();
+        try {
+            lblTen.setText("Tên đăng nhập: " + Auth.user.getUser());
+        lblChucVu.setText("Chức vụ: " + String.valueOf(Auth.user.isQuyen() ? "Quản lý" : "Nhân viên"));
+        } catch (Exception e) {
+            MsgBox.alert(this, "Bạn phải đăng nhập trước khi sử dụng!");
+        }
+    
     }
     
     private void fillTable() {
@@ -59,12 +71,12 @@ public class QLSach extends javax.swing.JPanel {
                 Object[] row = {
                     dg.getMa(),
                     dg.getTen(),
-                    dg.getMaLoai(),
-                    dg.getMaNXB(),
-                    dg.getMaTG(),
+                    lsdao.convertToTenLoai(dg.getMaLoai()),
+                    nxbdao.convertToTenNXB(dg.getMaNXB()),
+                    tgdao.convertToTenTacGia(dg.getMaTG()),
                     dg.getNam(),
                     dg.getSoluong(),
-                    dg.getMaKe(),
+                    ksdao.convertToViTri(dg.getMaKe()),
                     dg.getGhichu()
                 };
                 model.addRow(row);
@@ -76,6 +88,32 @@ public class QLSach extends javax.swing.JPanel {
         }
         
     }
+    
+//    void fillTableSP() {
+//        DefaultTableModel model = (DefaultTableModel) tblSach.getModel();
+//        model.setRowCount(0);
+//        try {
+//            String keyword = txtTimKiem.getText();
+//            List<Sach> list = sdao.selectByKeyword(keyword);
+//            for (Sach dg : list) {
+//                Object[] row = {
+//                    dg.getMa(),
+//                    dg.getTen(),
+//                    lsdao.convertToTenLoai(dg.getMaLoai()),
+//                    nxbdao.convertToTenNXB(dg.getMaNXB()),
+//                    tgdao.convertToTenTacGia(dg.getMaTG()),
+//                    dg.getNam(),
+//                    dg.getSoluong(),
+//                    ksdao.convertToViTri(dg.getMaKe()),
+//                    dg.getGhichu()
+//                };
+//                model.addRow(row);
+//            }
+//        } catch (Exception e) {
+//            MsgBox.showMessageDialog(this, "Lỗi truy vấn dữ liệu");
+//            e.printStackTrace();
+//        }
+//    }
     
     private void fillComboBoxLoaiSach() {
         DefaultComboBoxModel model = (DefaultComboBoxModel) cboLoai.getModel();
@@ -104,42 +142,12 @@ public class QLSach extends javax.swing.JPanel {
     }
     
     private void fillComboBoxNXB() {
-        cboKeSach.removeAllItems();
+        cboNXB1.removeAllItems();
             List<String> data = nxbdao.selectById();
             for (String item : data) {
-                cboKeSach.addItem(item);
+                cboNXB1.addItem(item);
         }
     }
-    
-    private void clickTableSach() {
-        int i = tblSach.getSelectedRow();
-        if (i > -1) {
-            try {
-                txtMa.setText(tblSach.getValueAt(i, 0) + "");
-                txtTen.setText(tblSach.getValueAt(i, 1) + "");
-                cboLoai.setSelectedItem(tblSach.getValueAt(i, 2));
-                cboKeSach.setSelectedItem(tblSach.getValueAt(i, 3));
-                cboTacGia.setSelectedItem(tblSach.getValueAt(i, 4));
-                txtNam.setText(tblSach.getValueAt(i, 5) + "");
-                txtSoLuong.setText(tblSach.getValueAt(i,6 )+ "");
-                cboKeSach.setSelectedItem(tblSach.getValueAt(i, 7));
-                txtGhiChu.setToolTipText(tblSach.getValueAt(i, 8)+"");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            tabs.setSelectedIndex(0);
-        } else {
-            JOptionPane.showMessageDialog(null, "Bạn chưa chọnvào bảng");
-        }
-
-    }
-//    private void clickTable(){
-//        int i = tblSach.getSelectedRow();
-//        if(i > -1){
-//            txt.setText(tblSach.getValueAt(i, 1));
-//            
-//        }
-//    }
     
     private void insert() {
         Sach model = getForm();
@@ -179,27 +187,33 @@ public class QLSach extends javax.swing.JPanel {
     private void clearForm() {
         this.setForm(new Sach());
         this.row = -1;
+        txtMa.setBackground(Color.white);
 //        this.updateStatus();
     }
 
-    private void edit() {
-        String macd = (String) tblSach.getValueAt(this.row, 0);
-        Sach cd = sdao.selectById(macd);
-        this.setForm(cd);
-        tabs.setSelectedIndex(0);
-//        this.updateStatus();
-        
+    void edit() {//điền thông tin đt sản phẩm lên form (theo vị trí row)
+        try {
+            int masp = (int) tblSach.getValueAt(this.row, 0);
+            Sach model = sdao.selectByIds(masp);
+            if (model != null) {
+                this.setForm(model);
+//                this.updateStatus();
+                tabs.setSelectedIndex(0);
+            }
+        } catch (Exception e) {
+            MsgBox.alert(this, "Lỗi click");
+        }
     }
     
     private void setForm(Sach cd) {
-        txtMa.setText(cd.getMa());
+        txtMa.setText(cd.getMa()+"");
         txtTen.setText(cd.getTen());
-        cboLoai.setSelectedItem(lsdao.selectByLoai(cd.getMaLoai()));
-        cboKeSach.setSelectedItem(cd.getMaNXB());
-        cboTacGia.setSelectedItem(cd.getMaTG());
+        cboLoai.setSelectedItem(lsdao.convertToTenLoai(cd.getMaLoai())+"");
+        cboNXB1.setSelectedItem(nxbdao.convertToTenNXB(cd.getMaNXB())+"");
+        cboTacGia.setSelectedItem(tgdao.convertToTenTacGia(cd.getMaTG())+"");
         txtNam.setText(String.valueOf(cd.getNam()));
         txtSoLuong.setText(String.valueOf(cd.getSoluong()));
-        cboKeSach.setSelectedItem(cd.getMaKe());
+        cboKeSach.setSelectedItem(ksdao.convertToViTri(cd.getMaKe())+"");
         txtGhiChu.setToolTipText(cd.getGhichu());
         lblAnh.setIcon(XImage.readIconCD("NoImage.png"));
         if (cd.getHinh() != null) {
@@ -210,19 +224,21 @@ public class QLSach extends javax.swing.JPanel {
 
     private Sach getForm() {
         Sach s = new Sach();
-        s.setMa(txtMa.getText());
+        s.setMa(Integer.parseInt(txtMa.getText()));
         s.setTen(txtTen.getText());
-        s.setMaLoai(lsdao.selectByLoai(String.valueOf(cboLoai.getSelectedItem()))+"");
-        s.setMaNXB((String) cboKeSach.getSelectedItem());
-        s.setMaTG((String) cboTacGia.getSelectedItem());
+        s.setMaLoai(lsdao.convertToMaLoai(cboLoai.getSelectedItem()+""));
+        s.setMaNXB(nxbdao.convertToMaNXB(cboNXB1.getSelectedItem()+""));
+        s.setMaTG(tgdao.convertToMaTG(cboTacGia.getSelectedItem()+""));
         s.setNam(Integer.parseInt(txtNam.getText()));
         s.setSoluong(Integer.parseInt(txtSoLuong.getText()));
-        s.setMaKe((String) cboKeSach.getSelectedItem());
-        s.setGhichu(txtGhiChu.getToolTipText());
+        s.setMaKe(ksdao.convertToMaKe(""+cboKeSach.getSelectedItem()));
         s.setHinh(lblAnh.getToolTipText());
+        s.setGhichu(txtGhiChu.getText());
+        
         return s;
     }
 
+    
     private void first() {
         this.row = 0;
         this.edit();
@@ -302,7 +318,7 @@ public class QLSach extends javax.swing.JPanel {
         cboNXB1 = new javax.swing.JComboBox<>();
         txtSoLuong = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
-        txtTen = new javax.swing.JTextField();
+        txtMa = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         txtNam = new javax.swing.JTextField();
@@ -313,11 +329,12 @@ public class QLSach extends javax.swing.JPanel {
         btnXoa = new javax.swing.JButton();
         btnMoi = new javax.swing.JButton();
         btnThem = new javax.swing.JButton();
-        txtMa = new javax.swing.JTextField();
+        txtTen = new javax.swing.JTextField();
+        jLabel11 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         tblSach = new javax.swing.JTable();
-        jTextField4 = new javax.swing.JTextField();
+        txtTimKiem = new javax.swing.JTextField();
         jLabel10 = new javax.swing.JLabel();
         jButton5 = new javax.swing.JButton();
         jButton6 = new javax.swing.JButton();
@@ -346,14 +363,14 @@ public class QLSach extends javax.swing.JPanel {
                 lblAnhMouseClicked(evt);
             }
         });
-        pnlSach.add(lblAnh, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 100, 440, 360));
+        pnlSach.add(lblAnh, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 170, 440, 340));
 
         jLabel1.setFont(new java.awt.Font("Times New Roman", 3, 36)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(153, 102, 0));
         jLabel1.setText("SÁCH");
         pnlSach.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 20, -1, -1));
 
-        cboLoai.setFont(new java.awt.Font("Segoe UI Semilight", 0, 12)); // NOI18N
+        cboLoai.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
         cboLoai.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 0, 0)));
         cboLoai.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -363,10 +380,10 @@ public class QLSach extends javax.swing.JPanel {
         pnlSach.add(cboLoai, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 180, 260, 40));
 
         jLabel2.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
-        jLabel2.setText("Tên sách");
-        pnlSach.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 90, -1, -1));
+        jLabel2.setText("Mã sách");
+        pnlSach.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 90, -1, -1));
 
-        cboTacGia.setFont(new java.awt.Font("Segoe UI Semilight", 0, 12)); // NOI18N
+        cboTacGia.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
         cboTacGia.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 0, 0)));
         cboTacGia.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -383,7 +400,7 @@ public class QLSach extends javax.swing.JPanel {
         jLabel4.setText("Ghi chú");
         pnlSach.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 370, -1, -1));
 
-        cboKeSach.setFont(new java.awt.Font("Segoe UI Semilight", 0, 12)); // NOI18N
+        cboKeSach.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
         cboKeSach.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 0, 0)));
         cboKeSach.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -396,7 +413,7 @@ public class QLSach extends javax.swing.JPanel {
         jLabel5.setText("Kệ sách");
         pnlSach.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(800, 230, -1, -1));
 
-        cboNXB1.setFont(new java.awt.Font("Segoe UI Semilight", 0, 12)); // NOI18N
+        cboNXB1.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
         cboNXB1.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 0, 0)));
         cboNXB1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -405,6 +422,7 @@ public class QLSach extends javax.swing.JPanel {
         });
         pnlSach.add(cboNXB1, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 250, 260, 40));
 
+        txtSoLuong.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
         txtSoLuong.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 0, 0)));
         pnlSach.add(txtSoLuong, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 320, 260, 40));
 
@@ -412,8 +430,11 @@ public class QLSach extends javax.swing.JPanel {
         jLabel6.setText("Loại sách");
         pnlSach.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 160, -1, -1));
 
-        txtTen.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 0, 0)));
-        pnlSach.add(txtTen, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 110, 570, 40));
+        txtMa.setEditable(false);
+        txtMa.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
+        txtMa.setText("0");
+        txtMa.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 0, 0)));
+        pnlSach.add(txtMa, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 110, 330, 40));
 
         jLabel7.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
         jLabel7.setText("Nhà xuất bản");
@@ -423,12 +444,14 @@ public class QLSach extends javax.swing.JPanel {
         jLabel8.setText("Năm xuất bản");
         pnlSach.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(800, 300, -1, -1));
 
+        txtNam.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
         txtNam.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 0, 0)));
         pnlSach.add(txtNam, new org.netbeans.lib.awtextra.AbsoluteConstraints(800, 320, 260, 40));
 
         jScrollPane1.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 0, 0)));
 
         txtGhiChu.setColumns(20);
+        txtGhiChu.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
         txtGhiChu.setRows(5);
         jScrollPane1.setViewportView(txtGhiChu);
 
@@ -478,8 +501,13 @@ public class QLSach extends javax.swing.JPanel {
         });
         pnlSach.add(btnThem, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 470, -1, -1));
 
-        txtMa.setText("0");
-        pnlSach.add(txtMa, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 470, -1, -1));
+        txtTen.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
+        txtTen.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 0, 0)));
+        pnlSach.add(txtTen, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 110, 570, 40));
+
+        jLabel11.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
+        jLabel11.setText("Tên sách");
+        pnlSach.add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 90, -1, -1));
 
         tabs.addTab("THÔNG TIN", pnlSach);
 
@@ -489,6 +517,7 @@ public class QLSach extends javax.swing.JPanel {
         jScrollPane2.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Danh sách", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.ABOVE_TOP, new java.awt.Font("Segoe UI Semilight", 0, 16), new java.awt.Color(153, 102, 0))); // NOI18N
         jScrollPane2.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
 
+        tblSach.setFont(new java.awt.Font("Segoe UI Semilight", 0, 14)); // NOI18N
         tblSach.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null, null, null, null, null},
@@ -517,11 +546,16 @@ public class QLSach extends javax.swing.JPanel {
         });
         jScrollPane2.setViewportView(tblSach);
 
-        jPanel2.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 180, 1020, 400));
+        jPanel2.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 180, 1020, 360));
 
-        jTextField4.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
-        jTextField4.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 0, 0)));
-        jPanel2.add(jTextField4, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 90, 350, 40));
+        txtTimKiem.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
+        txtTimKiem.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 0, 0)));
+        txtTimKiem.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtTimKiemKeyReleased(evt);
+            }
+        });
+        jPanel2.add(txtTimKiem, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 90, 350, 40));
 
         jLabel10.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
         jLabel10.setText("Tìm kiếm");
@@ -588,7 +622,7 @@ public class QLSach extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(tabs, javax.swing.GroupLayout.PREFERRED_SIZE, 568, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(tabs, javax.swing.GroupLayout.DEFAULT_SIZE, 584, Short.MAX_VALUE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -616,7 +650,8 @@ public class QLSach extends javax.swing.JPanel {
     private void tblSachMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblSachMouseClicked
         // TODO add your handling code here:
         if (evt.getClickCount() == 2) {
-            clickTableSach();
+            this.row = tblSach.getSelectedRow();
+            edit();
         }
     }//GEN-LAST:event_tblSachMouseClicked
 
@@ -629,11 +664,29 @@ public class QLSach extends javax.swing.JPanel {
     }//GEN-LAST:event_jButton7ActionPerformed
 
     private void btnThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThemActionPerformed
-        insert();
+        if(XValidate.checkNullText(txtTen)
+                &&XValidate.checkNullText(txtSoLuong)
+                &&XValidate.checkNullText(txtNam)){
+            if(XValidate.checkNumber(txtSoLuong)
+                    &&XValidate.checkNumber(txtNam)){
+                if(XValidate.checkYear(txtNam)){
+                    insert();
+                }
+            }
+        }
     }//GEN-LAST:event_btnThemActionPerformed
 
     private void btnSuaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSuaActionPerformed
-        update();
+        if(XValidate.checkNullText(txtTen)
+                &&XValidate.checkNullText(txtSoLuong)
+                &&XValidate.checkNullText(txtNam)){
+            if(XValidate.checkNumber(txtSoLuong)
+                    &&XValidate.checkNumber(txtNam)){
+                if(XValidate.checkYear(txtNam)){
+                    update();
+                }
+            }
+        }
     }//GEN-LAST:event_btnSuaActionPerformed
 
     private void btnXoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXoaActionPerformed
@@ -653,6 +706,18 @@ public class QLSach extends javax.swing.JPanel {
         next();
     }//GEN-LAST:event_jButton6ActionPerformed
 
+    private void txtTimKiemKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTimKiemKeyReleased
+        // TODO add your handling code here:
+        TableRowSorter<TableModel> rowSorter = new TableRowSorter<>(tblSach.getModel());
+        tblSach.setRowSorter(rowSorter);
+        
+        // Tạo RowFilter dựa trên nội dung tìm kiếm
+        RowFilter<Object, Object> rowFilter = RowFilter.regexFilter("(?i)" + txtTimKiem.getText());
+
+        // Đặt RowFilter cho RowSorter
+        rowSorter.setRowFilter(rowFilter);
+    }//GEN-LAST:event_txtTimKiemKeyReleased
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnMoi;
@@ -669,6 +734,7 @@ public class QLSach extends javax.swing.JPanel {
     private javax.swing.JButton jButton8;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -681,7 +747,6 @@ public class QLSach extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTextField jTextField4;
     private javax.swing.JLabel lblAnh;
     private javax.swing.JLabel lblChucVu;
     private javax.swing.JLabel lblTen;
@@ -693,5 +758,7 @@ public class QLSach extends javax.swing.JPanel {
     private javax.swing.JTextField txtNam;
     private javax.swing.JTextField txtSoLuong;
     private javax.swing.JTextField txtTen;
+    private javax.swing.JTextField txtTimKiem;
     // End of variables declaration//GEN-END:variables
+        
 }

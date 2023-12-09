@@ -91,4 +91,32 @@ public class KeSachDAO {
         return list;
     }
     
+    public String convertToViTri(int maKe) {
+    String viTri = "";
+    try {
+        String sql = "SELECT ViTri FROM KeSach WHERE MaKe = ?";
+        try (ResultSet resultSet = XJdbc.query(sql, maKe)) {
+            if (resultSet.next()) {
+                viTri = resultSet.getString("ViTri");
+            }
+        }
+    } catch (SQLException ex) {
+        ex.printStackTrace();
+    }
+    return viTri;
+}
+    public int convertToMaKe(String tenKS) {
+    int maKS = 0;
+    try {
+        String sql = "SELECT MaKe FROM KeSach WHERE ViTri = ?";
+        try (ResultSet resultSet = XJdbc.query(sql, tenKS)) {
+            if (resultSet.next()) {
+                maKS = resultSet.getInt("MaKe");
+            }
+        }
+    } catch (SQLException ex) {
+        ex.printStackTrace();
+    }
+    return maKS;
+}
 }

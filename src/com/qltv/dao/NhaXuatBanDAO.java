@@ -49,7 +49,7 @@ public class NhaXuatBanDAO {
         return selectBySql(SELECT_ALL_SQL);
     }
 
-    public NhaXuatBan selectById(String id) {
+    public NhaXuatBan selectById(int id) {
         List<NhaXuatBan> list = selectBySql(SELECT_BY_ID_SQL, id);
         if(list.isEmpty()){
             return null;
@@ -61,7 +61,7 @@ public class NhaXuatBanDAO {
         ArrayList<NhaXuatBan> list = new ArrayList<>();
         try {
             try {
-                rs = XJdbc.query(sql);
+                rs = XJdbc.query(sql,args);
                 while (rs.next()) {
                     NhaXuatBan dg = new NhaXuatBan();
                     dg.setMa(rs.getInt(1));
@@ -104,4 +104,34 @@ public class NhaXuatBanDAO {
         }
         return list;
     }
+    
+    public String convertToTenNXB(int maNXB) {
+    String tenNXB = "";
+    try {
+        String sql = "SELECT TenNXB FROM NhaXuatBan WHERE MaNXB = ?";
+        try (ResultSet resultSet = XJdbc.query(sql, maNXB)) {
+            if (resultSet.next()) {
+                tenNXB = resultSet.getString("TenNXB");
+            }
+        }
+    } catch (SQLException ex) {
+        ex.printStackTrace();
+    }
+    return tenNXB;
+}
+    
+    public int convertToMaNXB(String tenKS) {
+    int maKS = 0;
+    try {
+        String sql = "SELECT MaNXB FROM NhaXuatBan WHERE TenNXB like ?";
+        try (ResultSet resultSet = XJdbc.query(sql, tenKS)) {
+            if (resultSet.next()) {
+                maKS = resultSet.getInt("MaNXB");
+            }
+        }
+    } catch (SQLException ex) {
+        ex.printStackTrace();
+    }
+    return maKS;
+}
 }

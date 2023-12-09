@@ -26,6 +26,7 @@ public class TheThuVienDAO{
     public static String DELETE_SQL = "DELETE FROM TheThuVien WHERE MaTheThuVien=?";
     public static String SELECT_ALL_SQL = "SELECT * FROM TheThuVien";
     public static String SELECT_BY_ID_SQL = "SELECT * FROM TheThuVien WHERE MaDocGia=?";
+    public static String SELECT_BY_ID_TTV = "SELECT * FROM TheThuVien WHERE MaTheThuVien=?";
 
     public void insert(TheThuVien entity) {
         XJdbc.update(INSERT_SQL,
@@ -61,6 +62,15 @@ public List<TheThuVien> selectByIds(int id) {
         return list;
     }
 
+    public TheThuVien selectByIdTTV(int id) {
+        List<TheThuVien> list = selectBySql(SELECT_BY_ID_TTV, id);
+        if(list.isEmpty()){
+            return null;
+        }
+        return list.get(0);
+        
+    }
+
     protected List<TheThuVien> selectBySql(String sql, Object... args) {
         List<TheThuVien> list = new ArrayList<>();
         try {
@@ -73,7 +83,6 @@ public List<TheThuVien> selectByIds(int id) {
                     entity.setNgayKetThuc(rs.getDate(3));
                     entity.setGhiChu(rs.getString(4));
                     entity.setMadocgia(rs.getInt(5));
-                    System.out.println(rs.getDate(3));
                     list.add(entity);
                 }
             } finally {

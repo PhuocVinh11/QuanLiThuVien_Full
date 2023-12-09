@@ -12,8 +12,11 @@ import com.qltv.entity.ChiTietPhieuMuon;
 import com.qltv.entity.PhieuMuon;
 import com.qltv.utils.Auth;
 import com.qltv.utils.MsgBox;
+import com.qltv.utils.XDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -31,48 +34,29 @@ public class QLPhieuMuon extends javax.swing.JPanel {
     public QLPhieuMuon() {
         initComponents();
         
-        txtNhanVien.setText(Auth.user.getUser());
-        
         this.fillTablePM();
-        this.fillComboBoxDocGia();
-        this.fillComboBoxNV();
-        this.fillComboBoxLoc();
+        this.fillComboBoxDG();
+        this.fillNV();
+        
+        dateNgayMuon.setDate(XDate.now());
     }
     
     private void fillTablePM() {
+
         DefaultTableModel model = (DefaultTableModel) tblPM.getModel();
         model.setRowCount(0);
         try {
-            ArrayList<PhieuMuon> list = pmdao.selectAll();
+            List<PhieuMuon> list = pmdao.selectAll();
             for (PhieuMuon dg : list) {
                 Object[] row = {
-                    dg.getMaNV(),
-                    dg.getMaDG(),
+                    
+                    nvdao.convertToTenNV(dg.getMaNV()),
+                    dgdao.convertToTenDG(dg.getMaDG()),
+                    //                    dg.getMancc(),
+                    //                    dg.getManv(),
                     dg.getNgayMuon(),
                     dg.isTrangThai(),
-                    
-                };
-                model.addRow(row);
-            }
-        } catch (Exception e) {
-            MsgBox.alert(this, "Lỗi truy vấn dữ liệu độc giả!");
-            e.printStackTrace();
-        }
-    }
-    
-    private void fillTableCT() {
-
-        DefaultTableModel model = (DefaultTableModel) tblPMCT.getModel();
-        model.setRowCount(0);
-        try {
-            List<ChiTietPhieuMuon> list = ctdao.selectAll();
-            for (ChiTietPhieuMuon tv : list) {
-                Object[] row = {
-                    tv.getMaCTPM(),
-                    tv.getMaPM(),
-                    ctdao.convertToTenSach(tv.getMaSach()),
-                    tv.getNgayTra(),
-                    tv.getGhiChu()
+                    dg.getMaPM()
                 };
                 model.addRow(row);
             }
@@ -83,11 +67,266 @@ public class QLPhieuMuon extends javax.swing.JPanel {
 
     }
     
-    private void fillComboBoxDG() {
+        private void fillTableCT() {
+
+        DefaultTableModel model = (DefaultTableModel) tblPMCT.getModel();
+        model.setRowCount(0);
+        try {
+            List<ChiTietPhieuMuon> list = ctdao.selectAll();
+            for (ChiTietPhieuMuon tv : list) {
+                Object[] row = {
+                    tv.getMa(),
+                    tv.getMaPM(),
+                    ctdao.convertToTenSach(tv.getMaSach()),
+                    tv.getSoLuong(),
+                    tv.getNgayTra(),
+
+                };
+                model.addRow(row);
+            }
+        } catch (Exception e) {
+            MsgBox.alert(this, "Lỗi truy vấn dữ liệu phiếu nhập!");
+            e.printStackTrace();
+        }
+
+    }
+        private void fillComboBoxDG() {
         cboDocGia.removeAllItems();
-        List<String> data = dgdao.select();
+        List<String> data = dgdao.selectNXB();
         for (String item : data) {
             cboDocGia.addItem(item);
+        }
+    }
+        private void fillNV() {
+        txtNhanVien.setText(Auth.user.getUser());
+        List<String> data = pmdao.selectNXB();
+        for (String item : data) {
+            cboDocGia.addItem(item);
+        }
+    }
+        
+        private void insert() {
+        PhieuMuon model = getForm();
+        try {
+            pmdao.insert(model);
+            this.fillTablePM();
+//            this.clearForm();
+            MsgBox.alert(this, "Thêm phiếu mượn mới thành công!");
+        } catch (Exception e) {
+            MsgBox.alert(this, "Thêm phiếu mượn mới thất bại!");
+            e.printStackTrace();
+        }
+
+    }
+        private void update() {
+        PhieuMuon model = getFormPM1();
+        try {
+            pmdao.update(model);
+            this.fillTablePM();
+//            this.clearForm();
+            MsgBox.alert(this, "Cập nhật phiếu mượn mới thành công!");
+        } catch (Exception e) {
+            MsgBox.alert(this, "Cập nhật phiếu mượn mới thất bại!");
+            e.printStackTrace();
+        }
+
+    }
+
+    private void delete() {
+        int c = tblPM.getSelectedRow();
+        int id = (int) tblPM.getValueAt(c, 0);
+        pmdao.delete(id);
+        this.fillTablePM();
+        this.clearForm();
+        MsgBox.alert(this, "Xóa thành công");
+    }
+    
+    private void clearForm() {
+        txtNhanVien.setText(txtNhanVien.getText());
+        cboDocGia.setSelectedIndex(0);
+        dateNgayMuon.setDate(XDate.now());
+    }
+
+    private PhieuMuon getForm() {
+        PhieuMuon s = new PhieuMuon();
+        try {
+            Object selectedNV = txtNhanVien.getText();
+            Object selectedNCC = cboDocGia.getSelectedItem();
+
+            if (selectedNV != null) {
+                s.setMaNV(nvdao.convertToMaNV(selectedNV.toString()));
+            }
+
+            if (selectedNCC != null) {
+                s.setMaDG(nvdao.convertToMaNV(selectedNCC.toString()));
+            }
+
+            s.setNgayMuon(dateNgayMuon.getDateFormatString());
+            s.isTrangThai();
+        } catch (NumberFormatException ex) {
+            // Xử lý ngoại lệ khi parse không thành công
+            ex.printStackTrace();
+        } catch (Exception e) {
+            // Xử lý các ngoại lệ khác mà bạn quan tâm
+            e.printStackTrace();
+        }
+        return s;
+    }
+    
+    private PhieuMuon getFormPM1() {
+        PhieuMuon s = new PhieuMuon();
+        try {
+            Object selectedNV = txtNhanVien.getText();
+            Object selectedDG = cboDocGia.getSelectedItem();
+
+            if (selectedNV != null) {
+                s.setMaNV(nvdao.convertToMaNV(selectedNV.toString()));
+            }
+
+            if (selectedDG != null) {
+                s.setMaDG(dgdao.convertToMaDG(selectedDG.toString()));
+            }
+            s.setMaPM((int) tblPM.getValueAt(tblPM.getSelectedRow(), 0));
+            s.setNgayMuon(dateNgayMuon.getDateFormatString());
+            s.isTrangThai();
+        } catch (NumberFormatException ex) {
+            // Xử lý ngoại lệ khi parse không thành công
+            ex.printStackTrace();
+        } catch (Exception e) {
+            // Xử lý các ngoại lệ khác mà bạn quan tâm
+            e.printStackTrace();
+        }
+        return s;
+    }
+    
+    private void clickTablePM() {
+        int i = tblPM.getSelectedRow();
+        if (i > -1) {
+            try {
+                txtNhanVien.setText(tblPM.getValueAt(i, 0)+"");
+                cboDocGia.setSelectedItem(tblPM.getValueAt(i,1));
+                dateNgayMuon.setDate((java.util.Date) tblPM.getValueAt(i, 2));
+                if(tblPM.getValueAt(i, 3)=="Đã mượn"){
+                    rdoMuon.isSelected();
+                }else if(tblPM.getValueAt(i, 3)=="Đã trả"){
+                    rdoTra.isSelected();
+                }
+                txtMaPM.setText(tblPM.getValueAt(i, 4).toString());
+                txtMaPM.setText(tblPMCT.getValueAt(0, 1).toString());
+                txtTenSach.setText(tblPMCT.getValueAt(0,2).toString());
+                txtSoLuong.setText(tblPMCT.getValueAt(0, 3).toString());
+                dateNgayTra.setDate((Date) tblPMCT.getValueAt(0, 4));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            jTabbedPane1.setSelectedIndex(0);
+        } else {
+            JOptionPane.showMessageDialog(null, "Bạn chưa chọn vào bảng");
+        }
+
+    }
+    private void clickTableCTPM() {
+        PhieuMuon pm = new PhieuMuon();
+        int i = tblPMCT.getSelectedRow();
+        if (i > -1) {
+            try {
+                
+                txtMaPM.setText(tblPMCT.getValueAt(i, 1).toString());
+                txtTenSach.setText(tblPMCT.getValueAt(i, 2).toString());
+                txtSoLuong.setText(tblPMCT.getValueAt(i, 3).toString());
+                dateNgayTra.setDate((Date) tblPMCT.getValueAt(i, 4));
+                
+                System.out.println(tblPM.getValueAt(i, 0).toString()+"");
+                    System.out.println(String.valueOf(dgdao.convertToTenDG(pm.getMaDG())));
+                    System.out.println(String.valueOf(nvdao.convertToTenNV(pm.getMaNV())));
+                    System.out.println(pm.isTrangThai());
+//                    System.out.println(pm.getNgayMuon());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            jTabbedPane1.setSelectedIndex(0);
+        } else {
+            JOptionPane.showMessageDialog(null, "Bạn chưa chọn vào bảng");
+        }
+
+    }
+    public void getTableCT() {
+        DefaultTableModel modelSP = (DefaultTableModel) tblPMCT.getModel();
+        modelSP.setRowCount(0);
+        int rown = tblPM.getSelectedRow();
+        int ma = (int) tblPM.getValueAt(rown, 0);
+        List<ChiTietPhieuMuon> listSP = new ArrayList<>();
+        listSP = ctdao.selectByIds(ma);
+        try {
+            for (ChiTietPhieuMuon tv : listSP) {
+                Object[] rows = new Object[]{
+                    tv.getMa(),
+                    tv.getMaPM(),
+                    ctdao.convertToTenSach(tv.getMaSach()),
+                    tv.getSoLuong(),
+                    tv.getNgayTra()
+                    
+                };
+                modelSP.addRow(rows);
+            }
+        } catch (Exception e) {
+        }
+
+    }
+    
+    private ChiTietPhieuMuon getFormCT1() {
+    ChiTietPhieuMuon s = new ChiTietPhieuMuon();
+    
+    // Kiểm tra xem có hàng được chọn hay không
+    int selectedRow = tblPMCT.getSelectedRow();
+    if (selectedRow >= 0) {
+        s.setMa((int) tblPMCT.getValueAt(selectedRow, 0));
+        s.setMaPM(Integer.parseInt(txtMaPM.getText()));
+        s.setMaSach(ctdao.convertToMaSach(txtTenSach.getText()));
+        
+        s.setSoLuong(Integer.valueOf(txtSoLuong.getText()));
+        s.setNgayTra(dateNgayTra.getDate());
+    } else {
+        // Xử lý trường hợp không có hàng nào được chọn
+        MsgBox.alert(this, "Vui lòng chọn một hàng trong bảng chi tiết phiếu mượn!");
+    }
+    
+    return s;
+}
+    
+    private void updateCT() {
+    ChiTietPhieuMuon model = getFormCT1();
+    try {
+        ctdao.update(model);
+        this.getTableCT();
+        
+        // Gọi phương thức tính tổng thành tiền và hiển thị kết quả
+//        updateTongThanhTien();
+        
+        MsgBox.alert(this, "Cập nhật chi tiết phiếu nhập mới thành công!");
+    } catch (Exception e) {
+        MsgBox.alert(this, "Cập nhật chi tiết phiếu nhập mới thất bại!");
+        e.printStackTrace();
+    }
+}
+    private void filterByDG(int selectedDG) {
+        // Gọi phương thức của DAO hoặc thực hiện các truy vấn để lấy dữ liệu đã lọc
+        List<PhieuMuon> filteredData = pmdao.getPhieuMuonByDG(selectedDG);
+
+        // Xóa tất cả dữ liệu hiện tại trong bảng
+        DefaultTableModel model = (DefaultTableModel) tblPM.getModel();
+        model.setRowCount(0);
+
+        // Thêm dữ liệu đã lọc vào bảng
+        for (PhieuMuon PhieuMuon : filteredData) {
+            model.addRow(new Object[]{
+                PhieuMuon.getMaPM(),
+                
+                nvdao.convertToTenNV(PhieuMuon.getMaNV()),
+                dgdao.convertToTenDG(PhieuMuon.getMaDG()),
+                PhieuMuon.getNgayMuon(),
+                PhieuMuon.isTrangThai()
+            });
         }
     }
     
@@ -224,6 +463,11 @@ public class QLPhieuMuon extends javax.swing.JPanel {
         btnThemPM.setBackground(new java.awt.Color(204, 153, 0));
         btnThemPM.setFont(new java.awt.Font("Segoe UI Semilight", 0, 16)); // NOI18N
         btnThemPM.setText("Thêm");
+        btnThemPM.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnThemPMActionPerformed(evt);
+            }
+        });
         jPanel2.add(btnThemPM, new org.netbeans.lib.awtextra.AbsoluteConstraints(810, 40, -1, -1));
 
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
@@ -410,13 +654,13 @@ public class QLPhieuMuon extends javax.swing.JPanel {
 
         tblPM.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "Nhân viên", "Độc giả", "Ngày mượn", "Trạng thái", "MaPM"
             }
         ));
         jScrollPane3.setViewportView(tblPM);
@@ -522,6 +766,10 @@ public class QLPhieuMuon extends javax.swing.JPanel {
                 .addGap(0, 0, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnThemPMActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThemPMActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnThemPMActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

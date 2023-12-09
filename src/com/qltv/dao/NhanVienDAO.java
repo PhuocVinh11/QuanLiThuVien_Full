@@ -58,7 +58,7 @@ public class NhanVienDAO {
         ArrayList<NhanVien> list = new ArrayList<>();
         try {
             try {
-                rs = XJdbc.query(sql);
+                rs = XJdbc.query(sql,args);
                 while (rs.next()) {
                     NhanVien dg = new NhanVien();
                     dg.setMa(rs.getInt(1));
@@ -103,34 +103,6 @@ public class NhanVienDAO {
         return list;
     }
     
-//    public Integer selectNV(String id){
-//        String SELECT_BY_NCC_ID = "select MaNV from NhanVien where TenNV like '?'";
-//         List<Integer> list = selectByNV1(SELECT_BY_NCC_ID, id);
-//        if(!list.isEmpty()){
-//            return list.get(0);
-//        }
-//        else{
-//            return 0;
-//        }
-//    }
-//    
-//    protected ArrayList<Integer> selectByNV1(String sql, Object... args) {
-//    ArrayList<Integer> list = new ArrayList<>();
-//    try {
-//        try (ResultSet rs = XJdbc.query(sql, args)) {
-//            while (rs.next()) {
-//                int pn = rs.getInt(1);
-//                list.add(pn);
-//            }
-//        }
-//    } catch (SQLException ex) {
-//        // Xử lý ngoại lệ, bạn có thể ném một ngoại lệ hoặc ghi log
-//        // Nếu ném ngoại lệ, đảm bảo rằng ngoại lệ này được xử lý tại nơi gọi hàm
-//        ex.printStackTrace(); // Hoặc sử dụng logging framework như SLF4J để ghi log
-//    }
-//    return list;
-//}
-    
     public int convertToMaNV(String tenNV) {
     int maNV = 0;
     try {
@@ -160,4 +132,24 @@ public String convertToTenNV(int maNV) {
     }
     return tenNV;
 }
+
+public static NhanVien getnhanvien(int ma) {
+		try {
+			String sql = "select TenNV from NhanVien where MaNV = ?";
+			NhanVien nv = new NhanVien();
+			Connection conn = XJdbc.getConnection();
+			PreparedStatement pstm = conn.prepareStatement(sql);
+			pstm.setInt(1, ma);
+			ResultSet rs = pstm.executeQuery();
+			if (rs.next()) {
+				nv.setTen(rs.getString("TenNV"));
+			}
+
+			return nv;
+		} catch (Exception e) {
+
+			e.printStackTrace();
+			return null;
+		}
+	}
 }

@@ -4,75 +4,73 @@
  */
 package com.qltv.entity;
 
+import java.util.Date;
+
 /**
  *
  * @author 84565
  */
 public class ChiTietPhieuMuon {
-    private int MaCTPM;
-	private int MaPM;
-	private int MaSach;
-	private String NgayTra;
-	private String GhiChu;
+    int ma, maPM, maSach, soLuong;
+    Date ngayTra;
+    boolean trangThai;
 
     public ChiTietPhieuMuon() {
-        super();
     }
 
-    public ChiTietPhieuMuon(int MaCTPM, int MaPM, int MaSach, String NgayTra, String GhiChu) {
-        super();
-        this.MaCTPM = MaCTPM;
-        this.MaPM = MaPM;
-        this.MaSach = MaSach;
-        this.NgayTra = NgayTra;
-        this.GhiChu = GhiChu;
+    public ChiTietPhieuMuon(int ma, int maPM, int maSach, int soLuong, Date ngayTra) {
+        this.ma = ma;
+        this.maPM = maPM;
+        this.maSach = maSach;
+        this.soLuong = soLuong;
+        this.ngayTra = ngayTra;
     }
 
-    public int getMaCTPM() {
-        return MaCTPM;
+    public int getMa() {
+        return ma;
     }
 
-    public void setMaCTPM(int MaCTPM) {
-        this.MaCTPM = MaCTPM;
+    public void setMa(int ma) {
+        this.ma = ma;
     }
 
     public int getMaPM() {
-        return MaPM;
+        return maPM;
     }
 
-    public void setMaPM(int MaPM) {
-        this.MaPM = MaPM;
+    public void setMaPM(int maPM) {
+        this.maPM = maPM;
     }
 
     public int getMaSach() {
-        return MaSach;
+        return maSach;
     }
 
-    public void setMaSach(int MaSach) {
-        this.MaSach = MaSach;
+    public void setMaSach(int maSach) {
+        this.maSach = maSach;
     }
 
-    public String getNgayTra() {
-        return NgayTra;
+    public int getSoLuong() {
+        return soLuong;
     }
 
-    public void setNgayTra(String NgayTra) {
-        this.NgayTra = NgayTra;
+    public void setSoLuong(int soLuong) {
+        this.soLuong = soLuong;
     }
 
-    public String getGhiChu() {
-        return GhiChu;
+    public Date getNgayTra() {
+        return ngayTra;
     }
 
-    public void setGhiChu(String GhiChu) {
-        this.GhiChu = GhiChu;
+    public void setNgayTra(Date ngayTra) {
+        this.ngayTra = ngayTra;
     }
 
-    @Override
-    public String toString() {
-        return "ChiTietPhieuMuon [MaCTPM=" + MaCTPM + ", MaPM=" + MaPM + ", MaSach="
-				+ MaSach + "NgayTra=" + NgayTra + ", GhiChu=" + GhiChu + "]";
-    }
+//    @Override
+//    public String toString() {
+//        return "ChiTietPhieuMuon [MaCTPM=" + MaCTPM + ", MaPM=" + MaPM + ", MaSach="
+//				+ MaSach + "NgayTra=" + NgayTra + ", GhiChu=" + GhiChu + "]";
+//    }
         
 
 }

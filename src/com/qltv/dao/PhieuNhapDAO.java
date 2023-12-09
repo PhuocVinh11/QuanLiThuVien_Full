@@ -86,6 +86,32 @@ public class PhieuNhapDAO {
         }
     }
     
+    public List<PhieuNhap> getPhieuNhapBy(int selectedNCC) {
+
+    // Sử dụng PreparedStatement để tránh SQL Injection
+    String sql = "SELECT * FROM PhieuNhap WHERE MaNCC = ?";
+    return selectBySql(sql, selectedNCC);
+    }
+    public static PhieuNhap getphieunhap(int ma) {
+		try {
+			String sql = "select * from phieunhap where MaPhieuNhap =?" ;
+			Connection conn = XJdbc.getConnection();
+			PreparedStatement pstm = conn.prepareStatement(sql);
+			pstm.setInt(1,ma);
+			ResultSet rs = pstm.executeQuery();
+			PhieuNhap pn = new PhieuNhap();
+			if(rs.next()) {
+				pn.setManv(rs.getInt("MaNV"));
+				pn.setMa(rs.getInt("MaPhieuNhap"));
+				pn.setMancc(rs.getInt("MaNCC"));
+				pn.setNgaynhap(rs.getDate("NgayNhap"));
+				
+			}
+			return pn;
+		} catch (Exception e) {
+			return null;
+		}
+	}
 //    public int selectNCC1(String id){
 //         List<Integer> list = selectByNCC1(SELECT_BY_NCC_ID, id);
 //        if(!list.isEmpty()){
@@ -95,6 +121,8 @@ public class PhieuNhapDAO {
 //            return 0;
 //        }
 //    }
+    
+    
     
     protected ArrayList<String> selectByNCC(String sql, Object...args){
         ArrayList<String> list = new ArrayList<>();
@@ -168,12 +196,6 @@ public class PhieuNhapDAO {
     return list;
 }
 
-    public List<PhieuNhap> getPhieuNhapByNCC(int selectedNCC) {
-
-    // Sử dụng PreparedStatement để tránh SQL Injection
-    String sql = "SELECT * FROM PhieuNhap WHERE MaNCC = ?";
-    return selectBySql(sql, selectedNCC);
-    }
     
     protected ArrayList<PhieuNhap> selectBySql(String sql, Object...args){
         ArrayList<PhieuNhap> list = new ArrayList<>();

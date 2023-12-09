@@ -2,7 +2,7 @@ package com.qltv.ui;
 
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
+ * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to editDG this template
  */
 
 
@@ -54,7 +54,7 @@ public class Main extends javax.swing.JFrame {
                 }else if (index == 7) {
                     setForm(new QLPhieuNhap());
                 }else if (index == 8) {
-                    setForm(new Form6());
+                    setForm(new ThongKe());
                 }else if (index == 9) {
                     setForm(new QLChung());
                 }else if(index == 10){

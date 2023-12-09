@@ -30,4 +30,13 @@ public class MsgBox {
         return JOptionPane.showInputDialog(parent, message, "",
                 JOptionPane.INFORMATION_MESSAGE);
     }
+    
+    /*
+    Hiển thị thông báo và yêu cầu người dùng xác nhận
+    @param parent là cửa sổ chứa thông báo
+    @param message là thông báo
+    */
+    public static void showErrorDialog(Component parent, String content, String title){
+        JOptionPane.showMessageDialog(parent, content, title, JOptionPane.ERROR_MESSAGE);
+    }
 }
