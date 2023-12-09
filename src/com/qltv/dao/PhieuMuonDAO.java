@@ -189,11 +189,12 @@ public class PhieuMuonDAO {
             rs = XJdbc.query(sql, args);
             while(rs.next()){
                 PhieuMuon pm = new PhieuMuon();
-                pm.setMaPM(rs.getInt("MaPhieuMuon"));
+                pm.setMaPM(rs.getInt("MaPM"));
                 pm.setMaNV(rs.getInt("MaNV"));
                 pm.setMaDG(rs.getInt("MaDocGia"));
                 pm.setNgayMuon(rs.getString("NgayMuon"));
-                pm.setTrangThai(rs.getBoolean("TrangThai"));
+                pm.setTrangThai(rs.getBoolean("TinhTrang"));
+                
                 
                 list.add(pm);
             }

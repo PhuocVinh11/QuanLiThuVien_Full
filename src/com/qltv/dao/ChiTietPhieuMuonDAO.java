@@ -63,11 +63,11 @@ public class ChiTietPhieuMuonDAO {
                 rs = XJdbc.query(sql, args);
                 while (rs.next()) {
                     ChiTietPhieuMuon entity = new ChiTietPhieuMuon();
-                    entity.setMaCTPM(rs.getInt(1));
+                    entity.setMa(rs.getInt(1));
                     entity.setMaPM(rs.getInt(2));
                     entity.setMaSach(rs.getInt(3));
-                    entity.setNgayTra(rs.getString(4));
-                    entity.setGhiChu(rs.getString(5));
+                    entity.setNgayTra(rs.getDate(4));
+                    entity.setSoLuong(rs.getInt(5));
                     list.add(entity);
                 }
             } finally {
